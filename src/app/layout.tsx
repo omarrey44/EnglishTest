@@ -1,18 +1,28 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Instrument_Serif } from "next/font/google";
+import { Fraunces, Instrument_Sans, JetBrains_Mono } from "next/font/google";
 import { ProgressProvider } from "@/components/progress/ProgressProvider";
 import "./globals.css";
 
-const inter = Inter({
+// Display: a wonky, high-contrast workbook serif. The SOFT/WONK axes are what
+// give headings their letterpress character (see --font-display in globals).
+const display = Fraunces({
   subsets: ["latin"],
-  variable: "--font-inter",
+  axes: ["SOFT", "WONK", "opsz"],
+  variable: "--font-display-face",
   display: "swap",
 });
 
-const display = Instrument_Serif({
+const body = Instrument_Sans({
   subsets: ["latin"],
-  weight: "400",
-  variable: "--font-display",
+  variable: "--font-body",
+  display: "swap",
+});
+
+// Used for index labels and for IPA, where a monospaced rhythm helps students
+// compare /ɪd/, /t/ and /d/ side by side.
+const mono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono-face",
   display: "swap",
 });
 
@@ -24,8 +34,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f6f4ef" },
-    { media: "(prefers-color-scheme: dark)", color: "#0c0d10" },
+    { media: "(prefers-color-scheme: light)", color: "#f1ece0" },
+    { media: "(prefers-color-scheme: dark)", color: "#0d0e15" },
   ],
   width: "device-width",
   initialScale: 1,
@@ -41,7 +51,7 @@ export default function RootLayout({
     <html
       lang="en"
       data-scroll-behavior="smooth"
-      className={`${inter.variable} ${display.variable} h-full`}
+      className={`${body.variable} ${display.variable} ${mono.variable} h-full`}
     >
       <body className="min-h-dvh antialiased">
         <ProgressProvider>{children}</ProgressProvider>

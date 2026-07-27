@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { motion } from "framer-motion";
 import {
   AlertTriangle,
+  ArrowRight,
   BookOpen,
   ClipboardCheck,
   Flame,
@@ -13,14 +12,24 @@ import {
   Trophy,
   Zap,
 } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import { useProgress } from "@/components/progress/ProgressProvider";
 import { SkillsGrid } from "@/components/progress/SkillCard";
-import { Card, SectionTitle } from "@/components/ui/Card";
+import { SectionTitle } from "@/components/ui/Card";
 import { StatTile } from "@/components/ui/Badge";
 import { ProgressBar } from "@/components/ui/ProgressBar";
-import { ButtonLink } from "@/components/ui/Button";
+import { TextLink } from "@/components/ui/Button";
 import { getReadiness, getTopicProgress } from "@/lib/adaptiveLearning";
 import { accuracyOf, readinessLabel, scoreOutOfTen } from "@/lib/scoring";
+import { AppHeader } from "./AppHeader";
+
+const ACTIONS = [
+  { href: "/practice?mode=smart", title: "Start smart practice", meta: "Personalized exercises", icon: Sparkles, primary: true },
+  { href: "/exam", title: "Take exam simulator", meta: "Real exam experience", icon: Trophy, primary: false },
+  { href: "/review", title: "Review my mistakes", meta: "Learn from your errors", icon: AlertTriangle, primary: false },
+  { href: "/learn", title: "Browse all topics", meta: "Practice by subject", icon: BookOpen, primary: false },
+] as const;
 
 export function Dashboard() {
   const { state, reset } = useProgress();
@@ -32,170 +41,160 @@ export function Dashboard() {
   const lastExam = state.examResults[0];
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-4 pt-6 pb-16 sm:px-6 sm:pt-10">
-      <header className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h1 className="font-display text-[2.25rem] leading-none sm:text-[2.75rem]">
-            English Exam Trainer
-          </h1>
-          <p className="mt-2 text-muted">Your goal: 10/10</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="tabular inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1.5 text-sm font-semibold text-gold">
-            <Zap className="size-4" />
-            {state.xp} XP
-          </span>
-          <span className="tabular inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1.5 text-sm font-semibold">
-            <Flame className="size-4 text-warning" />
-            {state.streak}
-          </span>
-        </div>
-      </header>
+    <div className="min-h-dvh">
+      <AppHeader />
+      <main className="mx-auto w-full max-w-[1440px] px-5 pb-16 sm:px-8 lg:px-12">
+        <section className="relative mt-5 min-h-[440px] overflow-hidden rounded-[32px] border border-white bg-[#f2eadd] shadow-[0_24px_80px_rgba(46,43,53,.12)]">
+          <Image
+            src="/images/generated/study-hero.png"
+            alt=""
+            fill
+            priority
+            sizes="(max-width: 768px) 100vw, 1400px"
+            className="object-cover object-[58%_center] sm:object-center"
+          />
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(248,244,236,.98)_0%,rgba(248,244,236,.9)_34%,rgba(248,244,236,.15)_67%,rgba(248,244,236,.05)_100%)]" />
 
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <Card className="mt-7 p-5 sm:p-7">
-          <div className="flex flex-wrap items-end justify-between gap-4">
+          <div className="relative z-10 grid min-h-[440px] items-center gap-8 p-6 sm:p-10 lg:grid-cols-[.95fr_1.05fr] lg:p-12">
+            <div className="max-w-xl">
+              <p className="flex items-center gap-2 text-sm font-semibold text-ink-soft">
+                <Sparkles className="size-4 text-warning" />
+                Keep going, Omar!
+              </p>
+              <h1 className="mt-4 font-display text-[2.7rem] leading-[0.95] tracking-[-0.04em] sm:text-[4rem]">
+                Master English,
+                <br />
+                <span className="italic text-[#0b389a]">one practice at a time.</span>
+              </h1>
+              <p className="mt-6 max-w-md text-base leading-7 text-ink-soft">
+                Focused exercises, instant feedback and realistic exam simulations—all built around your progress.
+              </p>
+              <div className="mt-7 inline-flex max-w-md items-start gap-3 rounded-2xl border border-white/80 bg-white/65 px-4 py-3 text-sm text-ink-soft backdrop-blur">
+                <span className="font-display text-3xl leading-5 text-muted">“</span>
+                Small steps every day lead to big results.
+              </div>
+            </div>
+
+            <div className="glass rounded-[28px] p-5 sm:p-7 lg:ml-auto lg:max-w-[620px]">
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <p className="index text-muted">Your current level</p>
+                  <div className="mt-2 flex items-end gap-2">
+                    <p className="tabular font-display text-[5.8rem] leading-[.8] tracking-[-.06em]">{readiness}</p>
+                    <span className="pb-1 text-xl font-semibold">%</span>
+                  </div>
+                  <p className="mt-3 font-display text-xl">{readinessLabel(readiness)}</p>
+                </div>
+                <span className="rounded-full bg-blue-50 px-3 py-2 text-xs font-bold text-accent">
+                  B1 · Intermediate
+                </span>
+              </div>
+
+              <div className="mt-7">
+                <div className="mb-2 flex justify-between gap-4 text-sm">
+                  <span className="font-semibold">You&apos;re getting close!</span>
+                  <span className="tabular font-bold text-accent">{readiness}%</span>
+                </div>
+                <ProgressBar value={readiness} height="h-3" label="Exam readiness" />
+              </div>
+
+              <div className="mt-6 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+                <StatTile label="Score" value={`${scoreOutOfTen(readiness).toFixed(1)}/10`} icon={<Target className="size-4" />} />
+                <StatTile label="Accuracy" value={`${accuracy}%`} icon={<ClipboardCheck className="size-4" />} />
+                <StatTile label="Answered" value={state.questionsAnswered} icon={<BookOpen className="size-4" />} />
+                <StatTile label="Best streak" value={state.bestStreak} icon={<Flame className="size-4" />} />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <nav className="-mt-5 relative z-20 grid gap-3 px-3 md:grid-cols-2 xl:grid-cols-4" aria-label="Quick actions">
+          {ACTIONS.map((action, i) => {
+            const Icon = action.icon;
+            const meta = action.href === "/review" ? (openMistakes ? `${openMistakes} mistakes waiting` : "Everything is clear") : action.meta;
+            return (
+              <Link
+                key={action.href}
+                href={action.href}
+                className={`rise press-soft group flex min-h-[92px] items-center gap-4 rounded-2xl border p-4 ${
+                  action.primary
+                    ? "border-blue-700 bg-gradient-to-br from-[#075ee8] to-[#111e88] text-white"
+                    : "border-line bg-white text-ink"
+                }`}
+                style={{ "--d": `${i * 55}ms` } as React.CSSProperties}
+              >
+                <span className={`grid size-12 shrink-0 place-items-center rounded-2xl ${action.primary ? "bg-white/12" : "bg-blue-50 text-accent"}`}>
+                  <Icon className="size-5" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-sm font-bold">{action.title}</span>
+                  <span className={`mt-1 block text-xs ${action.primary ? "text-blue-100" : "text-muted"}`}>{meta}</span>
+                </span>
+                <ArrowRight className="size-4 shrink-0 transition-transform group-hover:translate-x-1" />
+              </Link>
+            );
+          })}
+        </nav>
+
+        {lastExam ? (
+          <div className="mt-5 flex flex-wrap items-center gap-3 rounded-2xl border border-line bg-white px-5 py-4 shadow-card">
+            <span className="index text-muted">Last exam</span>
+            <strong className="tabular font-display text-2xl">{lastExam.score.toFixed(1)}/10</strong>
+            <span className="text-sm text-muted">{lastExam.correct} of {lastExam.total} correct</span>
+            <span className="leader" aria-hidden />
+            <TextLink href="/exam">Take it again</TextLink>
+          </div>
+        ) : null}
+
+        <section className="mt-14">
+          <SectionTitle
+            index="Your learning journey"
+            title="Ten topics. One clear path."
+            hint="Continue where you left off, or focus on the topics that need the most attention."
+            action={<TextLink href="/learn">All lessons</TextLink>}
+          />
+          <SkillsGrid items={topics} />
+        </section>
+
+        <section className="mt-6 grid gap-4 lg:grid-cols-[1.6fr_.9fr]">
+          <div className="flex flex-col justify-between gap-6 overflow-hidden rounded-3xl bg-gradient-to-br from-[#071a55] to-[#111f63] p-6 text-white sm:flex-row sm:items-center">
+            <div className="flex items-center gap-4">
+              <span className="grid size-12 place-items-center rounded-full bg-white/10"><Flame className="size-6 text-orange-400" /></span>
+              <div>
+                <p className="font-display text-2xl">Build your daily streak</p>
+                <p className="mt-1 text-sm text-blue-100">Practice a little every day and see real progress.</p>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              {["M", "T", "W", "T", "F", "S", "S"].map((day, i) => (
+                <span key={`${day}-${i}`} className={`grid size-8 place-items-center rounded-full text-xs font-bold ${i < Math.min(state.streak, 7) ? "bg-accent text-white" : "bg-white/8 text-blue-200"}`}>
+                  {i < Math.min(state.streak, 7) ? "✓" : day}
+                </span>
+              ))}
+            </div>
+          </div>
+          <Link href="/practice?mode=plan" className="press-soft flex items-center justify-between rounded-3xl border border-orange-200 bg-gradient-to-br from-orange-50 to-[#ffe4bd] p-6">
             <div>
-              <p className="text-xs font-semibold tracking-[0.14em] text-muted uppercase">
-                Exam Readiness
-              </p>
-              <p className="tabular mt-2 font-display text-6xl leading-none sm:text-7xl">
-                {readiness}%
-              </p>
-              <p className="mt-2 text-lg text-muted">{readinessLabel(readiness)}</p>
+              <p className="font-display text-2xl">Your goal: 10/10</p>
+              <p className="mt-1 text-sm text-ink-soft">A focused plan is ready for you.</p>
             </div>
-            <div className="w-full sm:w-auto sm:min-w-[16rem]">
-              <ProgressBar value={readiness} height="h-2.5" label="Exam readiness" />
-              <p className="mt-2 text-xs text-muted">
-                Average of your ten topic scores. Reach 95% to be safe for a 10.
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
-            <StatTile
-              label="Current score"
-              value={`${scoreOutOfTen(readiness).toFixed(1)} / 10`}
-              icon={<Target className="size-3.5" />}
-            />
-            <StatTile label="Accuracy" value={`${accuracy}%`} icon={<ClipboardCheck className="size-3.5" />} />
-            <StatTile
-              label="Questions answered"
-              value={state.questionsAnswered}
-              icon={<BookOpen className="size-3.5" />}
-            />
-            <StatTile label="Best streak" value={state.bestStreak} icon={<Flame className="size-3.5" />} />
-          </div>
-        </Card>
-      </motion.div>
-
-      <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <ButtonLink href="/practice?mode=smart" size="lg" className="justify-between px-5">
-          <span className="flex items-center gap-2">
-            <Sparkles className="size-4" />
-            Smart Practice
-          </span>
-          <span className="text-sm opacity-70">15 questions</span>
-        </ButtonLink>
-        <ButtonLink
-          href="/practice?mode=plan"
-          size="lg"
-          variant="accent"
-          className="justify-between px-5"
-        >
-          <span className="flex items-center gap-2">
-            <Target className="size-4" />
-            Get Me to 10/10
-          </span>
-          <span className="text-sm opacity-70">personalized</span>
-        </ButtonLink>
-        <ButtonLink href="/exam" size="lg" variant="secondary" className="justify-between px-5">
-          <span className="flex items-center gap-2">
-            <Trophy className="size-4" />
-            Exam Simulator
-          </span>
-          <span className="text-sm text-muted">30 questions</span>
-        </ButtonLink>
-        <ButtonLink href="/review" size="lg" variant="secondary" className="justify-between px-5">
-          <span className="flex items-center gap-2">
-            <AlertTriangle className="size-4" />
-            Review My Mistakes
-          </span>
-          <span className="text-sm text-muted">
-            {openMistakes > 0 ? `${openMistakes} open` : "all clear"}
-          </span>
-        </ButtonLink>
-      </div>
-
-      {lastExam ? (
-        <Card className="mt-4 flex flex-wrap items-center justify-between gap-4 p-5">
-          <div>
-            <p className="text-xs font-semibold tracking-[0.14em] text-muted uppercase">
-              Last exam simulation
-            </p>
-            <p className="tabular mt-1.5 text-2xl font-semibold">
-              {lastExam.score.toFixed(1)} / 10
-              <span className="ml-2 text-base font-normal text-muted">
-                {lastExam.correct} of {lastExam.total} correct
-              </span>
-            </p>
-          </div>
-          <Link href="/exam" className="text-sm font-medium text-accent hover:underline">
-            Take it again →
+            <Zap className="size-8 text-warning" />
           </Link>
-        </Card>
-      ) : null}
+        </section>
 
-      <section className="mt-12">
-        <SectionTitle
-          title="Your Skills"
-          hint="Tap a topic to study the rules and practice it on its own."
-          action={
-            <Link href="/learn" className="text-sm font-medium text-accent hover:underline">
-              All lessons →
-            </Link>
-          }
-        />
-        <SkillsGrid items={topics} />
-      </section>
-
-      <footer className="mt-16 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-6 text-sm text-muted">
-        <p>Your progress is saved in this browser.</p>
-        {confirmReset ? (
-          <span className="flex items-center gap-3">
-            <span>Delete all progress?</span>
-            <button
-              type="button"
-              onClick={() => {
-                reset();
-                setConfirmReset(false);
-              }}
-              className="font-medium text-danger hover:underline"
-            >
-              Yes, reset
-            </button>
-            <button
-              type="button"
-              onClick={() => setConfirmReset(false)}
-              className="hover:text-ink"
-            >
-              Cancel
-            </button>
-          </span>
-        ) : (
-          <button
-            type="button"
-            onClick={() => setConfirmReset(true)}
-            className="transition-colors hover:text-ink"
-          >
-            Reset progress
-          </button>
-        )}
-      </footer>
+        <footer className="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-6 text-sm text-muted">
+          <p>Progress is saved in this browser.</p>
+          {confirmReset ? (
+            <span className="flex items-center gap-4">
+              <span>Delete all progress?</span>
+              <button type="button" onClick={() => { reset(); setConfirmReset(false); }} className="min-h-11 font-semibold text-danger">Yes, reset</button>
+              <button type="button" onClick={() => setConfirmReset(false)} className="min-h-11 font-semibold text-ink">Cancel</button>
+            </span>
+          ) : (
+            <button type="button" onClick={() => setConfirmReset(true)} className="min-h-11 font-semibold hover:text-ink">Reset progress</button>
+          )}
+        </footer>
+      </main>
     </div>
   );
 }

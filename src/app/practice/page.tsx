@@ -2,13 +2,12 @@
 
 import { Suspense, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { motion } from "framer-motion";
-import { ArrowRight, Target } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import type { Question, TopicId } from "@/types/question";
 import { SessionRunner, type SessionSummary } from "@/components/questions/SessionRunner";
 import { ResultsScreen } from "@/components/exam/ResultsScreen";
 import { Loading } from "@/components/ui/Loading";
-import { Card } from "@/components/ui/Card";
+import { Eyebrow } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button, ButtonLink } from "@/components/ui/Button";
 import { useProgress } from "@/components/progress/ProgressProvider";
@@ -86,15 +85,19 @@ function PracticeInner() {
 
   if (questions.length === 0) {
     return (
-      <div className="mx-auto w-full max-w-2xl px-4 pt-16 sm:px-6">
-        <h1 className="font-display text-3xl">Nothing to practice here yet</h1>
-        <p className="mt-3 text-muted">
+      <div className="mx-auto w-full max-w-2xl px-5 pt-20 sm:px-8">
+        <Eyebrow>{TITLES[mode]}</Eyebrow>
+        <h1 className="mt-4 font-display text-[2.5rem] leading-[0.92] tracking-[-0.03em] sm:text-[3rem]">
+          Nothing to practice here yet
+        </h1>
+        <p className="mt-4 max-w-md leading-relaxed text-muted">
           {mode === "mistakes"
             ? "You have no open mistakes. Take a Smart Practice session to find new ones."
             : "Answer a few questions first so the trainer can build a session for you."}
         </p>
-        <ButtonLink href="/" size="lg" className="mt-7">
+        <ButtonLink href="/" size="lg" className="mt-8">
           Back to dashboard
+          <ArrowRight className="size-4" />
         </ButtonLink>
       </div>
     );
@@ -102,43 +105,54 @@ function PracticeInner() {
 
   if (!started && planEntries) {
     return (
-      <div className="mx-auto w-full max-w-2xl px-4 pt-10 pb-16 sm:px-6 sm:pt-16">
-        <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}>
-          <p className="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.14em] text-accent uppercase">
-            <Target className="size-3.5" />
-            Get me to 10/10
-          </p>
-          <h1 className="mt-4 font-display text-4xl leading-none sm:text-5xl">
-            Your personalized session
+      <div className="mx-auto w-full max-w-2xl px-5 pt-12 pb-16 sm:px-8 sm:pt-20">
+        <div className="rise">
+          <div className="flex items-center gap-4">
+            <Eyebrow tone="var(--accent)">Get me to 10/10</Eyebrow>
+            <span aria-hidden className="leader" />
+            <span className="index tabular text-muted">{questions.length} Q</span>
+          </div>
+
+          <h1 className="mt-5 font-display text-[3rem] leading-[0.88] tracking-[-0.03em] sm:text-[3.75rem]">
+            Your <span className="marker">personalized</span> session
           </h1>
-          <p className="mt-4 text-muted">
+          <p className="mt-6 max-w-lg leading-relaxed text-ink-soft">
             Built from your results right now. The weakest topics get the most questions.
           </p>
 
-          <Card className="mt-7 divide-y divide-line">
-            {planEntries.map((entry) => (
-              <div key={entry.topic} className="flex items-center justify-between gap-4 p-4">
-                <div className="min-w-0">
-                  <p className="truncate font-medium">{TOPIC_MAP[entry.topic].name}</p>
-                  <p className="mt-1 text-xs text-muted">
-                    {entry.accuracy}% accuracy so far
-                  </p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Badge className={MASTERY_TONE[entry.level]}>{MASTERY_LABEL[entry.level]}</Badge>
-                  <span className="tabular w-20 text-right text-sm font-semibold">
-                    {entry.count} {entry.count === 1 ? "question" : "questions"}
-                  </span>
-                </div>
-              </div>
+          {/* The prescription, written out line by line. */}
+          <ul className="mt-10">
+            {planEntries.map((entry, i) => (
+              <li
+                key={entry.topic}
+                className="rise flex flex-wrap items-baseline gap-x-3 gap-y-2 border-b border-line py-3.5 first:border-t"
+                style={{ "--d": `${100 + i * 50}ms` } as React.CSSProperties}
+              >
+                <span
+                  className="index tabular shrink-0"
+                  style={{ color: TOPIC_MAP[entry.topic].accent }}
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span className="font-medium">{TOPIC_MAP[entry.topic].name}</span>
+                <Badge className={MASTERY_TONE[entry.level]}>{MASTERY_LABEL[entry.level]}</Badge>
+                <span aria-hidden className="leader" />
+                <span className="index tabular shrink-0 text-muted">{entry.accuracy}%</span>
+                <span className="tabular w-14 shrink-0 text-right font-display text-xl leading-none">
+                  ×{entry.count}
+                </span>
+              </li>
             ))}
-            <div className="flex items-center justify-between p-4">
-              <span className="font-medium">Total</span>
-              <span className="tabular font-semibold">{questions.length} questions</span>
-            </div>
-          </Card>
+            <li className="flex items-baseline gap-3 border-b-2 border-ink py-4">
+              <span className="font-semibold">Total</span>
+              <span aria-hidden className="leader" />
+              <span className="tabular font-display text-2xl leading-none tracking-[-0.02em]">
+                {questions.length} questions
+              </span>
+            </li>
+          </ul>
 
-          <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-9 flex flex-col gap-2.5 sm:flex-row">
             <Button size="lg" className="flex-1" onClick={() => setStarted(true)}>
               Start session
               <ArrowRight className="size-4" />
@@ -147,7 +161,7 @@ function PracticeInner() {
               Not now
             </ButtonLink>
           </div>
-        </motion.div>
+        </div>
       </div>
     );
   }

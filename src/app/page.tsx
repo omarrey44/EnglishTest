@@ -9,12 +9,13 @@ export default function HomePage() {
 
   if (!ready) {
     return (
-      <div className="mx-auto w-full max-w-5xl px-4 pt-10 sm:px-6" aria-busy>
-        <div className="h-10 w-64 animate-pulse rounded-lg bg-ink/5" />
-        <div className="mt-7 h-56 animate-pulse rounded-2xl bg-ink/5" />
-        <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          <div className="h-14 animate-pulse rounded-2xl bg-ink/5" />
-          <div className="h-14 animate-pulse rounded-2xl bg-ink/5" />
+      <div className="mx-auto w-full max-w-5xl px-5 pt-12 sm:px-8" aria-busy>
+        <div className="ink-load h-3 w-32 rounded-[2px]" />
+        <div className="ink-load mt-5 h-11 w-72 rounded-[3px]" />
+        <div className="ink-load mt-9 h-64 rounded-xl" />
+        <div className="mt-3 grid gap-2.5 sm:grid-cols-2">
+          <div className="ink-load h-16 rounded-xl" />
+          <div className="ink-load h-16 rounded-xl" />
         </div>
       </div>
     );

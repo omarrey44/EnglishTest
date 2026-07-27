@@ -1,15 +1,18 @@
 export function Loading({ label = "Preparing your questions…" }: { label?: string }) {
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-2xl flex-col justify-center px-4 sm:px-6">
-      <div className="h-3 w-32 animate-pulse rounded-full bg-ink/10" />
-      <div className="mt-6 h-10 w-full animate-pulse rounded-lg bg-ink/8" />
-      <div className="mt-3 h-10 w-4/5 animate-pulse rounded-lg bg-ink/8" />
-      <div className="mt-8 space-y-2.5">
-        <div className="h-14 animate-pulse rounded-xl bg-ink/5" />
-        <div className="h-14 animate-pulse rounded-xl bg-ink/5" />
-        <div className="h-14 animate-pulse rounded-xl bg-ink/5" />
+    <div
+      className="mx-auto flex min-h-dvh w-full max-w-2xl flex-col justify-center px-5 sm:px-8"
+      aria-busy
+    >
+      <div className="index text-muted">{label}</div>
+      <div className="ink-load mt-6 h-3 w-24 rounded-[2px]" />
+      <div className="ink-load mt-8 h-9 w-full rounded-[3px]" />
+      <div className="ink-load mt-3 h-9 w-4/5 rounded-[3px]" />
+      <div className="mt-10 space-y-2.5">
+        <div className="ink-load h-14 rounded-lg" />
+        <div className="ink-load h-14 rounded-lg" />
+        <div className="ink-load h-14 rounded-lg" />
       </div>
-      <p className="mt-8 text-sm text-muted">{label}</p>
     </div>
   );
 }

@@ -1,44 +1,32 @@
 @import "tailwindcss";
 
 :root {
-  --paper: #f6f4ef;
+  --paper: #f7f8fc;
+  --paper-deep: #eef1f8;
   --surface: #ffffff;
-  --surface-2: #fbfaf7;
-  --ink: #14161a;
-  --muted: #6b7076;
-  --line: #e6e2d9;
-  --accent: #0f6e5c;
+  --surface-2: #f6f8fc;
+  --ink: #0d1838;
+  --ink-soft: #39435f;
+  --muted: #717b94;
+  --line: #e2e6f0;
+  --accent: #1356e8;
   --accent-ink: #ffffff;
-  --success: #17795e;
-  --danger: #b3261e;
-  --warning: #a9761a;
-  --gold: #b8862b;
-  --shadow: 0 1px 2px rgba(20, 22, 26, 0.04), 0 8px 24px -12px rgba(20, 22, 26, 0.18);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --paper: #0c0d10;
-    --surface: #14161a;
-    --surface-2: #191c21;
-    --ink: #eeece7;
-    --muted: #9aa0a6;
-    --line: #262a30;
-    --accent: #35a48d;
-    --accent-ink: #08130f;
-    --success: #3fbf9a;
-    --danger: #f2705f;
-    --warning: #e0a94b;
-    --gold: #e0b457;
-    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 32px -16px rgba(0, 0, 0, 0.7);
-  }
+  --success: #118764;
+  --danger: #df4054;
+  --warning: #e77a18;
+  --gold: #b97913;
+  --stamp: rgba(19, 86, 232, 0.2);
+  --plate: rgba(22, 34, 67, 0.08);
+  --shadow: 0 14px 40px rgba(29, 43, 81, 0.08);
 }
 
 @theme inline {
   --color-paper: var(--paper);
+  --color-paper-deep: var(--paper-deep);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
   --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
   --color-muted: var(--muted);
   --color-line: var(--line);
   --color-accent: var(--accent);
@@ -47,14 +35,15 @@
   --color-danger: var(--danger);
   --color-warning: var(--warning);
   --color-gold: var(--gold);
-
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-display), ui-serif, Georgia, serif;
-
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display-face), ui-serif, Georgia, serif;
+  --font-display--font-variation-settings: "SOFT" 18, "WONK" 0, "opsz" 48;
+  --font-mono: var(--font-mono-face), ui-monospace, monospace;
   --shadow-card: var(--shadow);
 }
 
 * {
+  box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -63,26 +52,27 @@ html {
 }
 
 body {
-  background: var(--paper);
+  min-width: 320px;
+  background:
+    radial-gradient(circle at 5% 0%, rgba(74, 153, 255, 0.1), transparent 25rem),
+    radial-gradient(circle at 100% 30%, rgba(234, 174, 103, 0.09), transparent 28rem),
+    var(--paper);
   color: var(--ink);
-  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  overscroll-behavior-y: none;
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  background: rgba(19, 86, 232, 0.18);
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 3px solid rgba(19, 86, 232, 0.45);
   outline-offset: 3px;
-  border-radius: 6px;
+  border-radius: 10px;
 }
 
-/* Kept inside @layer base: unlayered rules would beat Tailwind utilities and
-   override text colours set with classes like `text-paper` on buttons. */
 @layer base {
   input,
   button,
@@ -90,20 +80,142 @@ body {
     font: inherit;
     color: inherit;
   }
+
+  button,
+  a {
+    touch-action: manipulation;
+  }
 }
 
-/* Numbers stay aligned inside stats and progress bars. */
+@layer components {
+  .plate {
+    box-shadow: var(--shadow);
+  }
+
+  .press,
+  .press-soft {
+    box-shadow: 0 8px 24px rgba(19, 86, 232, 0.12);
+    transition:
+      transform 180ms ease,
+      box-shadow 180ms ease,
+      background-color 180ms ease,
+      border-color 180ms ease,
+      color 180ms ease;
+  }
+
+  .press:hover:not(:disabled):not([aria-disabled="true"]),
+  .press-soft:hover:not(:disabled):not([aria-disabled="true"]) {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 32px rgba(19, 86, 232, 0.17);
+  }
+
+  .press:active:not(:disabled):not([aria-disabled="true"]),
+  .press-soft:active:not(:disabled):not([aria-disabled="true"]) {
+    transform: translateY(0) scale(0.99);
+    box-shadow: 0 5px 14px rgba(19, 86, 232, 0.1);
+  }
+
+  .glass {
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    background: rgba(255, 255, 255, 0.84);
+    box-shadow: 0 22px 70px rgba(25, 38, 76, 0.14);
+    backdrop-filter: blur(18px);
+  }
+}
+
 .tabular {
   font-variant-numeric: tabular-nums;
 }
 
 .phonetic {
-  font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
-  letter-spacing: -0.01em;
+  font-family: var(--font-mono-face), ui-monospace, monospace;
+}
+
+.index {
+  font-family: var(--font-mono-face), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+
+.marker,
+.marker-warning {
+  background-image: linear-gradient(transparent 65%, rgba(66, 146, 255, 0.2) 65%);
+}
+
+.marker-warning {
+  background-image: linear-gradient(transparent 65%, rgba(231, 122, 24, 0.18) 65%);
+}
+
+.leader {
+  flex: 1;
+  height: 1px;
+  align-self: center;
+  background: var(--line);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes stamp-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ink-sweep {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.rise {
+  animation: rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation-delay: var(--d, 0ms);
+}
+
+.stamped {
+  animation: stamp-in 0.42s ease-out backwards;
+  animation-delay: var(--d, 0ms);
+}
+
+.ink-load {
+  background-image: linear-gradient(90deg, #edf0f6, #dbe6fa, #edf0f6);
+  background-size: 200% 100%;
+  animation: ink-sweep 1.5s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  .rise,
+  .stamped,
+  .ink-load {
+    animation: none;
+  }
+
+  .press,
+  .press-soft {
+    transition: none;
   }
 }

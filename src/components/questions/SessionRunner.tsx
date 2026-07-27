@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import type { Question, TopicId } from "@/types/question";
 import type { TopicStat } from "@/types/progress";
 import { Button } from "@/components/ui/Button";
-import { ProgressBar } from "@/components/ui/ProgressBar";
 import { MultipleChoice, SoundChoice } from "./MultipleChoice";
 import { TextAnswer } from "./TextAnswer";
 import { WordOrder } from "./WordOrder";
@@ -16,6 +15,7 @@ import { useProgress } from "@/components/progress/ProgressProvider";
 import { isAnswerCorrect, accuracyOf, scoreOutOfTen } from "@/lib/scoring";
 import { pickFollowUpQuestion } from "@/lib/adaptiveLearning";
 import { TOPIC_MAP } from "@/data/topics";
+import { cn } from "@/lib/cn";
 
 export interface AnsweredQuestion {
   question: Question;
@@ -35,6 +35,41 @@ export interface SessionSummary {
 export type SessionMode = "practice" | "diagnostic" | "exam";
 
 const MAX_FOLLOW_UPS = 4;
+
+/** A punch card: one tick per question, punched as you answer. */
+function PunchStrip({
+  total,
+  done,
+  color,
+  label,
+}: {
+  total: number;
+  done: number;
+  color?: string;
+  label: string;
+}) {
+  return (
+    <div
+      className="flex gap-[2px]"
+      role="progressbar"
+      aria-label={label}
+      aria-valuenow={done}
+      aria-valuemin={0}
+      aria-valuemax={total}
+    >
+      {Array.from({ length: total }).map((_, i) => (
+        <span
+          key={i}
+          className={cn(
+            "h-1.5 flex-1 rounded-[1px] transition-colors duration-300",
+            i >= done && "bg-ink/12",
+          )}
+          style={i < done ? { background: color ?? "var(--accent)" } : undefined}
+        />
+      ))}
+    </div>
+  );
+}
 
 export function SessionRunner({
   questions,
@@ -197,48 +232,55 @@ export function SessionRunner({
 
   const status = checked ? (checked.correct ? "correct" : "wrong") : "idle";
   const accent = TOPIC_MAP[question.topic]?.accent;
+  const done = index + (checked ? 1 : 0);
 
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-2xl flex-col px-4 pb-8 sm:px-6">
-      <header className="sticky top-0 z-10 -mx-4 bg-paper/85 px-4 pt-4 pb-3 backdrop-blur-sm sm:-mx-6 sm:px-6">
+    <div className="mx-auto flex min-h-dvh w-full max-w-3xl flex-col px-5 pb-8 sm:px-8">
+      <header className="sticky top-0 z-10 -mx-5 border-b border-line bg-white/90 px-5 pt-4 pb-3 shadow-[0_8px_30px_rgba(29,43,81,.05)] backdrop-blur-md sm:-mx-8 sm:px-8">
         <div className="flex items-center justify-between gap-4">
           <button
             type="button"
             onClick={() => router.push(exitHref)}
-            className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-ink"
+            className="index inline-flex items-center gap-1.5 text-muted transition-colors hover:text-ink"
           >
-            <X className="size-4" />
+            <X className="size-3.5" />
             Exit
           </button>
-          <p className="tabular text-sm font-medium text-muted">
-            Question {index + 1} of {total}
-          </p>
-          {mode === "exam" ? (
-            <span className="text-xs font-medium tracking-[0.08em] text-muted uppercase">
-              Exam
+
+          <p className="index tabular text-ink">
+            <span style={mode === "exam" ? undefined : { color: accent }}>
+              Q.{String(index + 1).padStart(2, "0")}
             </span>
+            <span className="text-muted"> / {String(total).padStart(2, "0")}</span>
+          </p>
+
+          {mode === "exam" ? (
+            <span className="index text-muted">Exam</span>
           ) : (
             <span
               className={
                 state.streak > 0
-                  ? "inline-flex items-center gap-1 text-sm font-semibold text-warning"
-                  : "inline-flex items-center gap-1 text-sm text-muted/60"
+                  ? "index tabular inline-flex items-center gap-1 text-warning"
+                  : "index tabular inline-flex items-center gap-1 text-muted/60"
               }
             >
-              <Flame className="size-4" />
-              <span className="tabular">{state.streak}</span>
+              <Flame className="size-3.5" />
+              {state.streak}
             </span>
           )}
         </div>
-        <ProgressBar
-          value={((index + (checked ? 1 : 0)) / total) * 100}
-          className="mt-3"
-          tone={mode === "exam" ? "ink" : "accent"}
-          label={`${title} progress`}
-        />
+
+        <div className="mt-3">
+          <PunchStrip
+            total={total}
+            done={done}
+            color={mode === "exam" ? "var(--ink)" : accent}
+            label={`${title} progress`}
+          />
+        </div>
       </header>
 
-      <main className="flex flex-1 flex-col justify-start pt-6 sm:justify-center sm:pt-10 sm:pb-10">
+      <main className="flex flex-1 flex-col justify-start pt-8 sm:justify-center sm:pt-10 sm:pb-10">
         <AnimatePresence mode="wait">
           <motion.div
             key={question.id + String(index)}
@@ -246,20 +288,26 @@ export function SessionRunner({
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -24 }}
             transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-col sm:flex-none"
+            className="flex flex-col rounded-3xl border border-line bg-white p-5 shadow-card sm:flex-none sm:p-8"
           >
-            <p
-              className="text-xs font-semibold tracking-[0.14em] uppercase"
-              style={{ color: accent }}
-            >
-              {question.label}
-            </p>
-            <h1 className="mt-2 text-sm font-medium text-muted">{question.instruction}</h1>
-            <p className="mt-4 font-display text-[1.75rem] leading-[1.2] sm:text-[2.1rem]">
+            <div className="flex items-center gap-3">
+              <p className="index flex items-center gap-2" style={{ color: accent }}>
+                <span
+                  aria-hidden
+                  className="inline-block h-2.5 w-0.5 shrink-0 bg-current opacity-70"
+                />
+                {question.label}
+              </p>
+              <span aria-hidden className="leader" />
+            </div>
+
+            <h1 className="mt-3 text-sm font-medium text-muted">{question.instruction}</h1>
+
+            <p className="mt-4 font-display text-[1.9rem] leading-[1.12] tracking-[-0.02em] sm:text-[2.4rem]">
               {question.question}
             </p>
 
-            <div className="mt-7">
+            <div className="mt-8">
               {question.type === "pronunciation" ? (
                 <SoundChoice
                   options={question.options ?? []}
@@ -327,9 +375,13 @@ export function SessionRunner({
       </main>
 
       {!showFeedback ? (
-        <div className="sticky bottom-0 -mx-4 mt-6 bg-gradient-to-t from-paper via-paper to-transparent px-4 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:-mx-6 sm:px-6">
+        <div className="sticky bottom-0 -mx-5 mt-6 bg-gradient-to-t from-paper via-paper to-transparent px-5 pt-5 pb-[max(1rem,env(safe-area-inset-bottom))] sm:-mx-8 sm:px-8">
           <Button size="lg" fullWidth onClick={handleCheck} disabled={!canCheck}>
-            {mode === "exam" ? (index + 1 >= total ? "Finish exam" : "Next question") : "Check Answer"}
+            {mode === "exam"
+              ? index + 1 >= total
+                ? "Finish exam"
+                : "Next question"
+              : "Check Answer"}
           </Button>
         </div>
       ) : null}

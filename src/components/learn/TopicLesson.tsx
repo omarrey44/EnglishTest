@@ -4,9 +4,9 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import type { TopicId } from "@/types/question";
 import { LESSONS } from "@/data/lessons";
-import { TOPIC_MAP } from "@/data/topics";
-import { Card } from "@/components/ui/Card";
+import { TOPIC_MAP, TOPIC_IDS } from "@/data/topics";
 import { Badge } from "@/components/ui/Badge";
+import { Eyebrow } from "@/components/ui/Card";
 import { ButtonLink } from "@/components/ui/Button";
 import { SegmentBar } from "@/components/ui/ProgressBar";
 import { useProgress } from "@/components/progress/ProgressProvider";
@@ -14,6 +14,7 @@ import { getTopicProgress } from "@/lib/adaptiveLearning";
 import { MASTERY_LABEL, MASTERY_TONE } from "@/lib/scoring";
 import { EdSoundTrainer } from "./EdSoundTrainer";
 import { questionsByTopic } from "@/data/questions";
+import { AppHeader } from "@/components/dashboard/AppHeader";
 
 export function TopicLesson({ topic }: { topic: TopicId }) {
   const { state, ready } = useProgress();
@@ -21,108 +22,139 @@ export function TopicLesson({ topic }: { topic: TopicId }) {
   const lesson = LESSONS[topic];
   const progress = getTopicProgress(state).find((p) => p.topic === topic)!;
   const available = questionsByTopic(topic).length;
+  const chapter = String(TOPIC_IDS.indexOf(topic) + 1).padStart(2, "0");
+
+  const tone =
+    progress.level === "mastered"
+      ? "success"
+      : progress.level === "good"
+        ? "accent"
+        : progress.level === "practice"
+          ? "warning"
+          : "danger";
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-4 pt-6 pb-16 sm:px-6 sm:pt-10">
+    <>
+    <AppHeader />
+    <div className="mx-auto w-full max-w-4xl px-5 pt-8 pb-16 sm:px-8 sm:pt-12">
       <Link
         href="/learn"
-        className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-ink"
+        className="index inline-flex items-center gap-1.5 text-muted transition-colors hover:text-ink"
       >
-        <ArrowLeft className="size-4" />
+        <ArrowLeft className="size-3.5" />
         All lessons
       </Link>
 
-      <header className="mt-6">
-        <p
-          className="text-xs font-semibold tracking-[0.14em] uppercase"
-          style={{ color: meta.accent }}
+      {/* ---- Chapter head -------------------------------------------------- */}
+      <header className="mt-8 rounded-3xl border border-line bg-white p-6 shadow-card sm:p-8">
+        <div className="flex items-center gap-4">
+          <Eyebrow tone={meta.accent}>Chapter {chapter}</Eyebrow>
+          <span aria-hidden className="leader" />
+          <span className="index text-muted italic">{meta.spanishName}</span>
+        </div>
+
+        <h1
+          className="mt-4 border-b pb-5 font-display text-[2.75rem] leading-[0.9] tracking-[-0.03em] sm:text-[3.5rem]"
+          style={{ borderColor: meta.accent }}
         >
-          {meta.spanishName}
-        </p>
-        <h1 className="mt-3 font-display text-4xl leading-none sm:text-5xl">{meta.name}</h1>
-        <p className="mt-4 max-w-xl text-lg text-muted">{lesson.intro}</p>
+          {meta.name}
+        </h1>
+        <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-soft">{lesson.intro}</p>
       </header>
 
-      <Card className="mt-7 p-5">
-        <div className="flex items-center justify-between gap-4">
+      {/* ---- Your score ---------------------------------------------------- */}
+      <section className="mt-6 rounded-3xl border border-line bg-surface p-5 shadow-card sm:p-6">
+        <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-xs font-semibold tracking-[0.1em] text-muted uppercase">
-              Your score
-            </p>
-            <p className="tabular mt-1.5 text-2xl font-semibold">
+            <Eyebrow>Your score</Eyebrow>
+            <p className="tabular mt-2.5 font-display text-[3rem] leading-none tracking-[-0.04em]">
               {ready && progress.attempted > 0 ? `${progress.accuracy}%` : "—"}
-              <span className="ml-2 text-sm font-normal text-muted">
-                {progress.correct}/{progress.attempted} correct
-              </span>
+            </p>
+            <p className="index mt-2 text-muted">
+              {progress.correct} of {progress.attempted} correct
             </p>
           </div>
-          <Badge className={MASTERY_TONE[progress.level]}>{MASTERY_LABEL[progress.level]}</Badge>
+          <Badge className={MASTERY_TONE[progress.level]}>
+            {MASTERY_LABEL[progress.level]}
+          </Badge>
         </div>
-        <div className="mt-4">
-          <SegmentBar
-            value={progress.accuracy}
-            tone={
-              progress.level === "mastered"
-                ? "success"
-                : progress.level === "good"
-                  ? "accent"
-                  : progress.level === "practice"
-                    ? "warning"
-                    : "danger"
-            }
-          />
+
+        <div className="mt-5">
+          <SegmentBar value={progress.accuracy} tone={tone} />
         </div>
+
         <ButtonLink
           href={`/practice?mode=topic&topic=${topic}`}
           size="lg"
           fullWidth
-          className="mt-5"
+          className="mt-6"
         >
           Practice {meta.short} · {Math.min(10, available)} questions
           <ArrowRight className="size-4" />
         </ButtonLink>
-      </Card>
+      </section>
 
       {topic === "edPronunciation" ? (
-        <section className="mt-10">
-          <h2 className="font-display text-2xl">ED Sound Trainer</h2>
-          <p className="mt-2 text-muted">The three sounds, and how to choose between them.</p>
-          <div className="mt-5">
+        <section className="mt-14">
+          <div className="flex items-baseline gap-3 border-b-2 border-ink pb-2.5">
+            <h2 className="font-display text-2xl tracking-[-0.015em]">ED Sound Trainer</h2>
+            <span aria-hidden className="leader" />
+          </div>
+          <p className="mt-3 text-muted">The three sounds, and how to choose between them.</p>
+          <div className="mt-6">
             <EdSoundTrainer />
           </div>
         </section>
       ) : null}
 
-      <div className="mt-10 space-y-8">
-        {lesson.sections.map((section) => (
+      {/* ---- Lesson body ---------------------------------------------------- */}
+      <div className="mt-14 space-y-12">
+        {lesson.sections.map((section, i) => (
           <section key={section.title}>
-            <h2 className="font-display text-2xl">{section.title}</h2>
-            {section.body ? <p className="mt-2 text-muted">{section.body}</p> : null}
+            <div className="flex items-baseline gap-3 border-b-2 border-ink pb-2.5">
+              <span className="index tabular text-muted">
+                {chapter}.{i + 1}
+              </span>
+              <h2 className="font-display text-2xl tracking-[-0.015em]">{section.title}</h2>
+              <span aria-hidden className="leader" />
+            </div>
+
+            {section.body ? (
+              <p className="mt-4 leading-relaxed text-ink-soft">{section.body}</p>
+            ) : null}
 
             {section.bullets ? (
-              <ul className="mt-4 space-y-2">
+              <ul className="mt-5 space-y-2">
                 {section.bullets.map((bullet) => (
                   <li
                     key={bullet}
-                    className="rounded-xl border border-line bg-surface px-4 py-3 text-[0.98rem]"
+                  className="flex gap-3 rounded-2xl border border-line bg-white px-4 py-3 text-[0.98rem] leading-relaxed shadow-[0_6px_20px_rgba(29,43,81,.04)]"
                   >
-                    {bullet}
+                    <span
+                      aria-hidden
+                      className="mt-2 inline-block h-1.5 w-1.5 shrink-0 rounded-full"
+                      style={{ background: meta.accent }}
+                    />
+                    <span>{bullet}</span>
                   </li>
                 ))}
               </ul>
             ) : null}
 
             {section.examples ? (
-              <ul className="mt-4 divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface">
+              <ul className="mt-5 overflow-hidden rounded-xl border border-line bg-surface">
                 {section.examples.map((example) => (
                   <li
                     key={example.left + example.right}
-                    className="flex flex-wrap items-baseline gap-x-4 gap-y-1 px-4 py-3.5"
+                    className="flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-line px-4 py-3.5 last:border-b-0"
                   >
-                    <span className="min-w-[8rem] font-medium">{example.left}</span>
-                    <span className="text-muted">{example.right}</span>
+                    <span className="min-w-[7.5rem] font-semibold tracking-[-0.01em]">
+                      {example.left}
+                    </span>
+                    <span aria-hidden className="leader" />
+                    <span className="text-ink-soft">{example.right}</span>
                     {example.note ? (
-                      <span className="text-xs text-muted/80 italic">{example.note}</span>
+                      <span className="index w-full text-muted">{example.note}</span>
                     ) : null}
                   </li>
                 ))}
@@ -137,11 +169,12 @@ export function TopicLesson({ topic }: { topic: TopicId }) {
         size="lg"
         fullWidth
         variant="accent"
-        className="mt-12"
+        className="mt-14"
       >
         Practice this topic now
         <ArrowRight className="size-4" />
       </ButtonLink>
     </div>
+    </>
   );
 }

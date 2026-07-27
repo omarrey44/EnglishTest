@@ -1,15 +1,15 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { motion } from "framer-motion";
 import { ArrowRight, EyeOff, ListChecks, Timer } from "lucide-react";
 import { SessionRunner, type SessionSummary } from "@/components/questions/SessionRunner";
 import { ResultsScreen } from "@/components/exam/ResultsScreen";
 import { Loading } from "@/components/ui/Loading";
-import { Card } from "@/components/ui/Card";
+import { Eyebrow } from "@/components/ui/Card";
 import { Button, ButtonLink } from "@/components/ui/Button";
 import { useProgress } from "@/components/progress/ProgressProvider";
 import { generateExam } from "@/lib/examGenerator";
+import { AppHeader } from "@/components/dashboard/AppHeader";
 
 export default function ExamPage() {
   const { ready, saveExam } = useProgress();
@@ -43,45 +43,66 @@ export default function ExamPage() {
 
   if (!started) {
     return (
-      <div className="mx-auto w-full max-w-2xl px-4 pt-10 pb-16 sm:px-6 sm:pt-16">
-        <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}>
-          <p className="text-xs font-semibold tracking-[0.14em] text-muted uppercase">
-            Exam Simulator
-          </p>
-          <h1 className="mt-4 font-display text-4xl leading-none sm:text-5xl">
-            30 questions. All topics.
+      <>
+      <AppHeader />
+      <div className="mx-auto w-full max-w-3xl px-5 pt-8 pb-16 sm:px-8 sm:pt-12">
+        <div className="rounded-3xl border border-line bg-white p-6 shadow-card sm:p-10">
+        <div className="rise">
+          <div className="flex items-center gap-4">
+            <Eyebrow>Exam simulator</Eyebrow>
+            <span aria-hidden className="leader" />
+            <span className="index tabular text-muted">30 Q</span>
+          </div>
+
+          <h1 className="mt-5 font-display text-[3rem] leading-[0.88] tracking-[-0.03em] sm:text-[4rem]">
+            30 questions.
+            <br />
+            <span className="marker">All topics.</span>
           </h1>
-          <p className="mt-4 text-muted">
-            This works like the real written exam: you answer everything first and only see
-            your score at the end.
+          <p className="mt-6 max-w-lg text-lg leading-relaxed text-ink-soft">
+            This works like the real written exam: you answer everything first and only see your
+            score at the end.
           </p>
 
-          <Card className="mt-7 divide-y divide-line">
-            <div className="flex items-start gap-3 p-4">
-              <ListChecks className="mt-0.5 size-4 text-accent" />
-              <p className="text-sm">
-                <span className="font-medium">One question per screen</span> — ordinals, dates,
-                years, and/but, past verbs, -ed spelling and pronunciation, was/were and WH
-                questions.
-              </p>
-            </div>
-            <div className="flex items-start gap-3 p-4">
-              <EyeOff className="mt-0.5 size-4 text-accent" />
-              <p className="text-sm">
-                <span className="font-medium">No feedback during the exam</span> — no answers, no
-                explanations, no right/wrong marks.
-              </p>
-            </div>
-            <div className="flex items-start gap-3 p-4">
-              <Timer className="mt-0.5 size-4 text-accent" />
-              <p className="text-sm">
-                <span className="font-medium">No time limit</span> — but answer as if there were
-                one. Your score out of 10 appears at the end.
-              </p>
-            </div>
-          </Card>
+          <ul className="mt-10">
+            {[
+              {
+                icon: ListChecks,
+                lead: "One question per screen",
+                body: "Ordinals, dates, years, and/but, past verbs, -ed spelling and pronunciation, was/were and WH questions.",
+              },
+              {
+                icon: EyeOff,
+                lead: "No feedback during the exam",
+                body: "No answers, no explanations, no right/wrong marks until you are done.",
+              },
+              {
+                icon: Timer,
+                lead: "No time limit",
+                body: "But answer as if there were one. Your score out of 10 appears at the end.",
+              },
+            ].map((rule, i) => {
+              const Icon = rule.icon;
+              return (
+                <li
+                  key={rule.lead}
+                  className="rise flex items-start gap-4 border-b border-line py-4 first:border-t"
+                  style={{ "--d": `${100 + i * 70}ms` } as React.CSSProperties}
+                >
+                  <span className="index tabular mt-1 shrink-0 text-muted">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <Icon className="mt-0.5 size-4 shrink-0 text-accent" />
+                  <p className="text-sm leading-relaxed">
+                    <span className="font-semibold">{rule.lead}</span>
+                    <span className="text-muted"> — {rule.body}</span>
+                  </p>
+                </li>
+              );
+            })}
+          </ul>
 
-          <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-9 flex flex-col gap-2.5 sm:flex-row">
             <Button size="lg" className="flex-1" onClick={() => setStarted(true)}>
               Start exam
               <ArrowRight className="size-4" />
@@ -90,8 +111,10 @@ export default function ExamPage() {
               Back to dashboard
             </ButtonLink>
           </div>
-        </motion.div>
+        </div>
+        </div>
       </div>
+      </>
     );
   }
 

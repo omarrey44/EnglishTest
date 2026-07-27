@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Check, Flame, Lightbulb, X } from "lucide-react";
+import { ArrowRight, Flame, Lightbulb } from "lucide-react";
 import type { Question } from "@/types/question";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/cn";
@@ -31,94 +31,73 @@ export function Feedback({
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 220, damping: 26 }}
       className={cn(
-        "rounded-2xl border p-5 sm:p-6",
-        correct ? "border-success/30 bg-success/8" : "border-danger/30 bg-danger/8",
+        "relative rounded-xl border-2 p-5 pt-8 sm:p-6 sm:pt-9",
+        correct ? "border-success bg-success/8" : "border-danger bg-danger/8",
       )}
     >
-      <div className="flex items-start gap-3">
-        <motion.span
-          initial={{ scale: 0.6, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ type: "spring", stiffness: 400, damping: 18 }}
-          className={cn(
-            "flex size-9 shrink-0 items-center justify-center rounded-full",
-            correct ? "bg-success text-white" : "bg-danger text-white",
-          )}
-        >
-          {correct ? <Check className="size-5" /> : <X className="size-5" />}
-        </motion.span>
+      {/* The verdict, pressed into the page like a marker's rubber stamp. */}
+      <div
+        className={cn(
+          "stamped absolute -top-4 left-4 -rotate-[5deg] rounded-[5px] border-[2.5px] bg-paper px-3 py-1.5 sm:left-6",
+          correct ? "border-success text-success" : "border-danger text-danger",
+        )}
+      >
+        <span className="index text-[0.8rem]">{correct ? "Correct" : "Not quite"}</span>
+      </div>
 
-        <div className="min-w-0 flex-1">
-          <p
-            className={cn(
-              "font-display text-2xl leading-none",
-              correct ? "text-success" : "text-danger",
-            )}
-          >
-            {correct ? "Correct!" : "Not quite."}
-          </p>
-
-          {correct ? (
-            <p className="mt-3 text-lg leading-snug font-medium">{question.correctAnswer}</p>
-          ) : (
-            <div className="mt-3 space-y-3">
-              <div>
-                <p className="text-xs font-medium tracking-[0.06em] text-muted uppercase">
-                  Your answer
-                </p>
-                <p className="mt-1 text-[1.05rem] leading-snug line-through decoration-danger/50">
-                  {userAnswer.trim() || "—"}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs font-medium tracking-[0.06em] text-muted uppercase">
-                  Correct answer
-                </p>
-                <p className="mt-1 text-[1.05rem] leading-snug font-semibold">
-                  {question.correctAnswer}
-                </p>
-              </div>
-            </div>
-          )}
-
-          <div className="mt-4 flex gap-2.5 rounded-xl border border-ink/8 bg-surface/70 p-3.5">
-            <Lightbulb className="mt-0.5 size-4 shrink-0 text-warning" />
-            <div className="min-w-0">
-              {question.rule ? (
-                <p className="text-sm font-semibold">{question.rule}</p>
-              ) : null}
-              <p className={cn("text-sm text-muted", question.rule && "mt-1")}>
-                {question.explanation}
-              </p>
-            </div>
+      {correct ? (
+        <p className="font-display text-2xl leading-snug tracking-[-0.015em]">
+          {question.correctAnswer}
+        </p>
+      ) : (
+        <div className="space-y-4">
+          <div>
+            <p className="index text-muted">Your answer</p>
+            <p className="mt-1.5 text-[1.05rem] leading-snug text-danger line-through decoration-danger/60">
+              {userAnswer.trim() || "—"}
+            </p>
           </div>
-
-          <div className="mt-4 flex flex-wrap items-center gap-2 text-sm">
-            {correct && xpGained > 0 ? (
-              <motion.span
-                initial={{ opacity: 0, y: -6 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="rounded-full bg-gold/15 px-2.5 py-1 font-semibold text-gold"
-              >
-                +{xpGained} XP
-              </motion.span>
-            ) : null}
-            {correct && streak >= 3 ? (
-              <span className="inline-flex items-center gap-1 rounded-full bg-ink/5 px-2.5 py-1 text-muted">
-                <Flame className="size-3.5 text-warning" />
-                {streak} question streak
-              </span>
-            ) : null}
-            {!correct && streak === 0 ? (
-              <span className="text-muted">Streak ended — let&apos;s build another one.</span>
-            ) : null}
-            {masteredTopicName ? (
-              <span className="rounded-full bg-success/15 px-2.5 py-1 font-semibold text-success">
-                {masteredTopicName} mastered +50 XP
-              </span>
-            ) : null}
+          <div>
+            <p className="index text-muted">Correct answer</p>
+            <p className="mt-1.5 font-display text-2xl leading-snug tracking-[-0.015em]">
+              {question.correctAnswer}
+            </p>
           </div>
         </div>
+      )}
+
+      <div className="mt-5 flex gap-3 rounded-lg border border-ink/10 bg-surface/80 p-4">
+        <Lightbulb className="mt-0.5 size-4 shrink-0 text-warning" />
+        <div className="min-w-0">
+          {question.rule ? (
+            <p className="text-sm font-semibold tracking-[-0.005em]">{question.rule}</p>
+          ) : null}
+          <p className={cn("text-sm leading-relaxed text-muted", question.rule && "mt-1.5")}>
+            {question.explanation}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-4 flex flex-wrap items-center gap-2">
+        {correct && xpGained > 0 ? (
+          <span className="index rounded-[5px] border border-gold/35 bg-gold/12 px-2 py-1 text-gold">
+            +{xpGained} XP
+          </span>
+        ) : null}
+        {correct && streak >= 3 ? (
+          <span className="index inline-flex items-center gap-1 rounded-[5px] border border-warning/30 bg-warning/10 px-2 py-1 text-warning">
+            <Flame className="size-3" />
+            {streak} in a row
+          </span>
+        ) : null}
+        {!correct && streak === 0 ? (
+          <span className="index text-muted">Streak ended — build another one</span>
+        ) : null}
+        {masteredTopicName ? (
+          <span className="index rounded-[5px] border border-success/35 bg-success/12 px-2 py-1 text-success">
+            {masteredTopicName} mastered · +50 XP
+          </span>
+        ) : null}
       </div>
 
       <Button
@@ -126,9 +105,9 @@ export function Feedback({
         fullWidth
         size="lg"
         variant={correct ? "accent" : "primary"}
-        className="mt-5"
+        className="mt-6"
       >
-        {correct ? (isLast ? "Finish" : "Continue") : isLast ? "Got it → Finish" : "Got it → Continue"}
+        {isLast ? "Finish" : "Continue"}
         <ArrowRight className="size-4" />
       </Button>
     </motion.div>

@@ -53,16 +53,21 @@ export function Landing() {
           </div>
         </section>
 
-        <section className="relative z-20 -mt-12 mx-3 grid gap-4 rounded-[28px] border border-white bg-white/92 p-5 shadow-[0_22px_70px_rgba(24,39,78,.14)] backdrop-blur-xl lg:grid-cols-[.85fr_1.65fr] lg:p-7">
-          <div className="flex items-center gap-4 rounded-2xl bg-gradient-to-br from-[#075ee8] to-[#101f88] p-5 text-white">
+        <section className="relative z-20 -mt-12 mx-3 grid gap-4 rounded-[28px] border border-white bg-white/92 p-5 shadow-[0_22px_70px_rgba(24,39,78,.14)] backdrop-blur-xl lg:p-7">
+          <div className="flex flex-wrap items-center gap-4 rounded-2xl bg-gradient-to-br from-[#075ee8] to-[#101f88] p-5 text-white">
             <span className="grid size-12 place-items-center rounded-2xl bg-white/12"><Target className="size-6" /></span>
             <div>
               <p className="text-xs font-semibold uppercase tracking-widest text-blue-200">One clear goal</p>
               <p className="mt-1 font-display text-3xl">Your 10/10 plan</p>
             </div>
+            <span className="ml-auto rounded-full bg-white/12 px-3.5 py-1.5 text-sm font-semibold">
+              {TOPICS.length} topics covered
+            </span>
           </div>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
-            {TOPICS.slice(0, 5).map((topic, index) => (
+
+          {/* Every topic on the exam, not a sample. */}
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+            {TOPICS.map((topic, index) => (
               <div key={topic.id} className="rounded-2xl border border-line bg-surface-2 p-3">
                 <span className="index" style={{ color: topic.accent }}>{String(index + 1).padStart(2, "0")}</span>
                 <p className="mt-2 text-sm font-semibold leading-tight">{topic.name}</p>

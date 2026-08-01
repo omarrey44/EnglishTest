@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ArrowRight, EyeOff, ListChecks, Timer } from "lucide-react";
+import { ArrowLeft, ArrowRight, EyeOff, ListChecks, Timer } from "lucide-react";
 import type { TopicId } from "@/types/question";
 import { SessionRunner, type SessionSummary } from "@/components/questions/SessionRunner";
 import { ResultsScreen } from "@/components/exam/ResultsScreen";
@@ -132,6 +132,7 @@ export default function ExamPage() {
                   <ArrowRight className="size-4" />
                 </Button>
                 <ButtonLink href="/" size="lg" variant="secondary" className="flex-1">
+                  <ArrowLeft className="size-4" />
                   Back to dashboard
                 </ButtonLink>
               </div>

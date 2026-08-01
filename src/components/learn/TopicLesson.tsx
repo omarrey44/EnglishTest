@@ -1,13 +1,12 @@
 "use client";
 
-import Link from "next/link";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import type { TopicId } from "@/types/question";
 import { LESSONS } from "@/data/lessons";
 import { TOPIC_MAP, TOPIC_IDS } from "@/data/topics";
 import { Badge } from "@/components/ui/Badge";
 import { Eyebrow } from "@/components/ui/Card";
-import { ButtonLink } from "@/components/ui/Button";
+import { BackLink, ButtonLink } from "@/components/ui/Button";
 import { SegmentBar } from "@/components/ui/ProgressBar";
 import { useProgress } from "@/components/progress/ProgressProvider";
 import { getTopicProgress } from "@/lib/adaptiveLearning";
@@ -37,13 +36,7 @@ export function TopicLesson({ topic }: { topic: TopicId }) {
     <>
     <AppHeader />
     <div className="mx-auto w-full max-w-4xl px-5 pt-8 pb-16 sm:px-8 sm:pt-12">
-      <Link
-        href="/learn"
-        className="index inline-flex items-center gap-1.5 text-muted transition-colors hover:text-ink"
-      >
-        <ArrowLeft className="size-3.5" />
-        All lessons
-      </Link>
+      <BackLink href="/learn">All lessons</BackLink>
 
       {/* ---- Chapter head -------------------------------------------------- */}
       <header className="mt-8 rounded-3xl border border-line bg-white p-6 shadow-card sm:p-8">

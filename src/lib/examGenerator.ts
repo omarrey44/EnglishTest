@@ -3,19 +3,19 @@ import { questionsByTopic } from "@/data/questions";
 import { TOPIC_IDS } from "@/data/topics";
 import { shuffle } from "./adaptiveLearning";
 
-/** How many diagnostic questions each topic gets (15 total, every topic covered). */
+/** How many diagnostic questions each topic gets (20 total, every topic covered). */
 const DIAGNOSTIC_WEIGHTS: Record<TopicId, number> = {
   ordinals: 1,
   weather: 1,
-  dates: 1,
+  dates: 2,
   years: 1,
   andBut: 1,
-  pastVerbs: 1,
+  pastVerbs: 2,
   irregularVerbs: 2,
-  pastNegative: 1,
+  pastNegative: 2,
   edSpelling: 1,
-  edPronunciation: 1,
-  wasWere: 1,
+  edPronunciation: 2,
+  wasWere: 2,
   whQuestions: 1,
   sequenceWords: 1,
   clothes: 1,

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, RotateCcw } from "lucide-react";
+import { ArrowLeft, ArrowRight, RotateCcw } from "lucide-react";
 import type { SessionSummary } from "@/components/questions/SessionRunner";
 import { StatTile, Badge } from "@/components/ui/Badge";
 import { Eyebrow, SectionTitle } from "@/components/ui/Card";
@@ -171,6 +171,7 @@ export function ResultsScreen({
           </Button>
         ) : null}
         <ButtonLink href="/" size="lg" variant="secondary" className="flex-1">
+          <ArrowLeft className="size-4" />
           Dashboard
         </ButtonLink>
       </div>

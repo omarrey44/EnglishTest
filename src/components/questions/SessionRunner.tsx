@@ -1,12 +1,11 @@
 "use client";
 
 import { useCallback, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { Flame, X } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { Flame } from "lucide-react";
 import type { Question, TopicId } from "@/types/question";
 import type { TopicStat } from "@/types/progress";
-import { Button } from "@/components/ui/Button";
+import { BackLink, Button } from "@/components/ui/Button";
 import { MultipleChoice, SoundChoice } from "./MultipleChoice";
 import { TextAnswer } from "./TextAnswer";
 import { WordOrder } from "./WordOrder";
@@ -15,7 +14,6 @@ import { useProgress } from "@/components/progress/ProgressProvider";
 import { isAnswerCorrect, accuracyOf, scoreOutOfTen } from "@/lib/scoring";
 import { pickFollowUpQuestion } from "@/lib/adaptiveLearning";
 import { TOPIC_MAP } from "@/data/topics";
-import { cn } from "@/lib/cn";
 
 export interface AnsweredQuestion {
   question: Question;
@@ -36,37 +34,62 @@ export type SessionMode = "practice" | "diagnostic" | "exam";
 
 const MAX_FOLLOW_UPS = 4;
 
-/** A punch card: one tick per question, punched as you answer. */
-function PunchStrip({
+/** A readable session meter with explicit text and a smooth, stable fill. */
+function SessionProgress({
   total,
   done,
+  current,
   color,
   label,
 }: {
   total: number;
   done: number;
+  current: number;
   color?: string;
   label: string;
 }) {
+  const reduceMotion = useReducedMotion();
+  const progress = total > 0 ? Math.round((done / total) * 100) : 0;
+
   return (
-    <div
-      className="flex gap-[2px]"
-      role="progressbar"
-      aria-label={label}
-      aria-valuenow={done}
-      aria-valuemin={0}
-      aria-valuemax={total}
-    >
-      {Array.from({ length: total }).map((_, i) => (
-        <span
-          key={i}
-          className={cn(
-            "h-1.5 flex-1 rounded-[1px] transition-colors duration-300",
-            i >= done && "bg-ink/12",
-          )}
-          style={i < done ? { background: color ?? "var(--accent)" } : undefined}
-        />
-      ))}
+    <div>
+      <div className="mb-2 flex items-center justify-between gap-3">
+        <p className="text-xs font-semibold tracking-[-0.005em] text-ink-soft">
+          Question <span className="tabular text-ink">{current}</span> of{" "}
+          <span className="tabular text-ink">{total}</span>
+        </p>
+        <p className="tabular text-xs font-semibold text-muted">{progress}% complete</p>
+      </div>
+
+      <div
+        className="relative h-3 overflow-hidden rounded-full border border-accent/15 bg-accent/8 shadow-inner"
+        role="progressbar"
+        aria-label={label}
+        aria-valuenow={done}
+        aria-valuemin={0}
+        aria-valuemax={total}
+        aria-valuetext={`${done} of ${total} questions completed`}
+      >
+        <motion.div
+          className="absolute inset-0 origin-left rounded-full"
+          style={{
+            background: `linear-gradient(90deg, var(--accent), ${color ?? "var(--accent)"})`,
+          }}
+          initial={false}
+          animate={{ scaleX: progress / 100 }}
+          transition={
+            reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 150, damping: 24 }
+          }
+        >
+          <span className="absolute inset-x-1 top-px h-[3px] rounded-full bg-white/35" />
+        </motion.div>
+
+        <div aria-hidden className="absolute inset-0 flex items-center justify-evenly">
+          {[1, 2, 3].map((tick) => (
+            <span key={tick} className="h-full w-px bg-white/55 mix-blend-soft-light" />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
@@ -84,7 +107,6 @@ export function SessionRunner({
   onFinish: (summary: SessionSummary) => void;
   exitHref?: string;
 }) {
-  const router = useRouter();
   const { state, answer: recordAnswer, perfectLesson } = useProgress();
 
   const [queue, setQueue] = useState<Question[]>(questions);
@@ -236,33 +258,31 @@ export function SessionRunner({
 
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-3xl flex-col px-5 pb-8 sm:px-8">
-      <header className="sticky top-0 z-10 -mx-5 border-b border-line bg-white/90 px-5 pt-4 pb-3 shadow-[0_8px_30px_rgba(29,43,81,.05)] backdrop-blur-md sm:-mx-8 sm:px-8">
-        <div className="flex items-center justify-between gap-4">
-          <button
-            type="button"
-            onClick={() => router.push(exitHref)}
-            className="index inline-flex items-center gap-1.5 text-muted transition-colors hover:text-ink"
-          >
-            <X className="size-3.5" />
-            Exit
-          </button>
+      <header className="sticky top-0 z-10 -mx-5 border-b border-line bg-white/92 px-5 pt-3 pb-4 shadow-[0_10px_32px_rgba(29,43,81,.07)] backdrop-blur-md sm:-mx-8 sm:px-8 sm:pt-4">
+        <div className="grid grid-cols-[auto_1fr_auto] items-center gap-3">
+          <BackLink href={exitHref} aria-label={`Back from ${title}`}>
+            Back
+          </BackLink>
 
-          <p className="index tabular text-ink">
-            <span style={mode === "exam" ? undefined : { color: accent }}>
-              Q.{String(index + 1).padStart(2, "0")}
-            </span>
-            <span className="text-muted"> / {String(total).padStart(2, "0")}</span>
-          </p>
+          <div className="min-w-0 text-center">
+            <p className="truncate text-sm font-semibold tracking-[-0.01em] text-ink">{title}</p>
+            <p className="index mt-0.5 truncate" style={mode === "exam" ? undefined : { color: accent }}>
+              {mode === "exam" ? "Exam mode" : TOPIC_MAP[question.topic]?.short}
+            </p>
+          </div>
 
           {mode === "exam" ? (
-            <span className="index text-muted">Exam</span>
+            <span className="grid min-h-11 min-w-11 place-items-center rounded-xl border border-line bg-surface-2 px-2 text-center index text-muted">
+              Exam
+            </span>
           ) : (
             <span
               className={
                 state.streak > 0
-                  ? "index tabular inline-flex items-center gap-1 text-warning"
-                  : "index tabular inline-flex items-center gap-1 text-muted/60"
+                  ? "index tabular inline-flex min-h-11 min-w-11 items-center justify-center gap-1 rounded-xl border border-warning/20 bg-warning/8 px-2 text-warning"
+                  : "index tabular inline-flex min-h-11 min-w-11 items-center justify-center gap-1 rounded-xl border border-line bg-surface-2 px-2 text-muted/70"
               }
+              aria-label={`${state.streak} answer streak`}
             >
               <Flame className="size-3.5" />
               {state.streak}
@@ -270,10 +290,11 @@ export function SessionRunner({
           )}
         </div>
 
-        <div className="mt-3">
-          <PunchStrip
+        <div className="mt-3.5">
+          <SessionProgress
             total={total}
             done={done}
+            current={index + 1}
             color={mode === "exam" ? "var(--ink)" : accent}
             label={`${title} progress`}
           />

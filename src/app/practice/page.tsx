@@ -2,7 +2,7 @@
 
 import { Suspense, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import type { Question, TopicId } from "@/types/question";
 import { SessionRunner, type SessionSummary } from "@/components/questions/SessionRunner";
 import { ResultsScreen } from "@/components/exam/ResultsScreen";
@@ -96,8 +96,8 @@ function PracticeInner() {
             : "Answer a few questions first so the trainer can build a session for you."}
         </p>
         <ButtonLink href="/" size="lg" className="mt-8">
+          <ArrowLeft className="size-4" />
           Back to dashboard
-          <ArrowRight className="size-4" />
         </ButtonLink>
       </div>
     );
@@ -158,7 +158,8 @@ function PracticeInner() {
               <ArrowRight className="size-4" />
             </Button>
             <ButtonLink href="/" size="lg" variant="secondary" className="flex-1">
-              Not now
+              <ArrowLeft className="size-4" />
+              Back to dashboard
             </ButtonLink>
           </div>
         </div>

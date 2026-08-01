@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import type { ComponentProps, ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
@@ -69,6 +70,31 @@ export function ButtonLink({
       {...props}
     >
       {children}
+    </Link>
+  );
+}
+
+/** A consistent, full-size way to move back through the app hierarchy. */
+export function BackLink({
+  className,
+  children,
+  ...props
+}: ComponentProps<typeof Link>) {
+  return (
+    <Link
+      className={cn(
+        "press-soft group inline-flex min-h-11 items-center gap-2 rounded-xl border border-line bg-white px-3.5 text-sm font-semibold tracking-[-0.01em] text-ink-soft hover:border-accent/30 hover:text-ink",
+        className,
+      )}
+      {...props}
+    >
+      <span
+        aria-hidden
+        className="grid size-7 shrink-0 place-items-center rounded-lg bg-accent/8 text-accent transition-transform duration-200 group-hover:-translate-x-0.5 motion-reduce:transform-none"
+      >
+        <ArrowLeft className="size-4" strokeWidth={2.25} />
+      </span>
+      <span>{children}</span>
     </Link>
   );
 }

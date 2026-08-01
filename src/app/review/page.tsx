@@ -1,11 +1,10 @@
 "use client";
 
-import Link from "next/link";
-import { ArrowLeft, CheckCircle2, RefreshCw } from "lucide-react";
+import { CheckCircle2, RefreshCw } from "lucide-react";
 import { useProgress } from "@/components/progress/ProgressProvider";
 import { Badge } from "@/components/ui/Badge";
 import { Eyebrow, SectionTitle } from "@/components/ui/Card";
-import { ButtonLink } from "@/components/ui/Button";
+import { BackLink, ButtonLink } from "@/components/ui/Button";
 import { Loading } from "@/components/ui/Loading";
 import { TOPIC_MAP } from "@/data/topics";
 import { AppHeader } from "@/components/dashboard/AppHeader";
@@ -22,13 +21,7 @@ export default function ReviewPage() {
     <>
     <AppHeader />
     <div className="mx-auto w-full max-w-4xl px-5 pt-8 pb-16 sm:px-8 sm:pt-12">
-      <Link
-        href="/"
-        className="index inline-flex items-center gap-1.5 text-muted transition-colors hover:text-ink"
-      >
-        <ArrowLeft className="size-3.5" />
-        Dashboard
-      </Link>
+      <BackLink href="/">Dashboard</BackLink>
 
       <header className="mt-8 rounded-3xl border border-line bg-white p-6 shadow-card sm:p-8">
         <div className="flex items-center gap-4">

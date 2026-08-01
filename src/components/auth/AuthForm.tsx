@@ -6,6 +6,7 @@ import { ArrowRight, TriangleAlert } from "lucide-react";
 import type { AuthFormState } from "@/app/auth/actions";
 import { Button } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Card";
+import { USERNAME_MAX, USERNAME_MIN } from "@/lib/auth/username";
 
 const FIELD =
   "min-h-12 w-full rounded-xl border border-line bg-white px-4 text-[1rem] outline-none transition-colors placeholder:text-muted/60 focus:border-accent";
@@ -45,16 +46,27 @@ export function AuthForm({
 
         <form action={formAction} className="mt-7 flex flex-col gap-4">
           <label className="flex flex-col gap-2">
-            <span className="index text-muted">Email</span>
+            <span className="index text-muted">Username</span>
             <input
-              type="email"
-              name="email"
-              autoComplete="email"
+              type="text"
+              name="username"
+              autoComplete="username"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               required
+              minLength={USERNAME_MIN}
+              maxLength={USERNAME_MAX}
+              pattern="[A-Za-z0-9_]+"
               disabled={!configured}
-              placeholder="you@example.com"
+              placeholder="maria_lopez"
               className={FIELD}
             />
+            {signingUp ? (
+              <span className="text-xs leading-relaxed text-muted">
+                Lowercase letters, numbers and underscores. No email needed.
+              </span>
+            ) : null}
           </label>
 
           <label className="flex flex-col gap-2">

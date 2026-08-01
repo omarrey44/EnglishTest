@@ -5,6 +5,7 @@ import { CloudOff, LogIn, LogOut, User as UserIcon } from "lucide-react";
 import { useSession } from "@/components/auth/SessionProvider";
 import { signOut } from "@/app/auth/actions";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
+import { usernameFromEmail } from "@/lib/auth/username";
 
 /**
  * Shows who is signed in, or offers to sign in. Guests keep using the app —
@@ -31,7 +32,11 @@ export function AccountMenu() {
     );
   }
 
-  const label = user.email ?? "Account";
+  // The stored address is synthetic; show the username the student typed.
+  const label =
+    (typeof user.user_metadata?.username === "string" ? user.user_metadata.username : null) ??
+    usernameFromEmail(user.email) ??
+    "Account";
 
   return (
     <details className="relative">

@@ -3,6 +3,11 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getServerSupabase } from "@/lib/supabase/server";
+import {
+  emailForUsername,
+  normalizeUsername,
+  usernameProblem,
+} from "@/lib/auth/username";
 
 export interface AuthFormState {
   error?: string;
@@ -12,16 +17,10 @@ export interface AuthFormState {
 const MIN_PASSWORD = 8;
 
 function readCredentials(formData: FormData) {
-  const email = String(formData.get("email") ?? "").trim();
-  const password = String(formData.get("password") ?? "");
-  return { email, password };
-}
-
-function validate(email: string, password: string): string | null {
-  if (!email) return "Enter your email.";
-  if (!email.includes("@")) return "That does not look like an email address.";
-  if (!password) return "Enter your password.";
-  return null;
+  return {
+    username: normalizeUsername(String(formData.get("username") ?? "")),
+    password: String(formData.get("password") ?? ""),
+  };
 }
 
 export async function signIn(
@@ -31,15 +30,27 @@ export async function signIn(
   const supabase = await getServerSupabase();
   if (!supabase) return { error: "Accounts are not set up on this deployment." };
 
-  const { email, password } = readCredentials(formData);
-  const invalid = validate(email, password);
-  if (invalid) return { error: invalid };
+  const { username, password } = readCredentials(formData);
+  const problem = usernameProblem(username);
+  if (problem) return { error: problem };
+  if (!password) return { error: "Enter your password." };
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { error } = await supabase.auth.signInWithPassword({
+    email: emailForUsername(username),
+    password,
+  });
+
   if (error) {
-    // Supabase deliberately does not say which half was wrong; keep it that way
-    // so the form cannot be used to discover which emails have accounts.
-    return { error: "Wrong email or password." };
+    // "Email not confirmed" would be baffling to a student who never gave one.
+    if (/not confirmed/i.test(error.message)) {
+      return {
+        error:
+          "This account still needs to be activated. Ask your teacher to turn off email confirmation in Supabase.",
+      };
+    }
+    // Otherwise report one message either way, so the form cannot be used to
+    // find out which usernames exist.
+    return { error: "Wrong username or password." };
   }
 
   revalidatePath("/", "layout");
@@ -53,9 +64,10 @@ export async function signUp(
   const supabase = await getServerSupabase();
   if (!supabase) return { error: "Accounts are not set up on this deployment." };
 
-  const { email, password } = readCredentials(formData);
-  const invalid = validate(email, password);
-  if (invalid) return { error: invalid };
+  const { username, password } = readCredentials(formData);
+  const problem = usernameProblem(username);
+  if (problem) return { error: problem };
+
   if (password.length < MIN_PASSWORD) {
     return { error: `Use at least ${MIN_PASSWORD} characters for your password.` };
   }
@@ -63,13 +75,33 @@ export async function signUp(
     return { error: "The two passwords do not match." };
   }
 
-  const { data, error } = await supabase.auth.signUp({ email, password });
-  if (error) return { error: error.message };
+  const { data, error } = await supabase.auth.signUp({
+    email: emailForUsername(username),
+    password,
+    // Kept so the username survives independently of how the address is built.
+    options: { data: { username } },
+  });
 
-  // With "Confirm email" on in Supabase, signUp returns no session — the user
-  // has to click the link first.
+  if (error) {
+    if (/already registered|already exists/i.test(error.message)) {
+      return { error: "That username is taken. Try another one." };
+    }
+    if (/rate limit/i.test(error.message)) {
+      return {
+        error:
+          "Sign-ups are rate limited because Supabase is still trying to send confirmation emails. Turn off email confirmation to fix it.",
+      };
+    }
+    return { error: error.message };
+  }
+
+  // No session means Supabase wants the address confirmed — impossible here,
+  // since the address is synthetic and nobody can read its inbox.
   if (!data.session) {
-    return { notice: `Almost there. Check ${email} for a confirmation link, then sign in.` };
+    return {
+      error:
+        "The account was created but cannot be used until email confirmation is turned off in Supabase (Authentication → Providers → Email).",
+    };
   }
 
   revalidatePath("/", "layout");

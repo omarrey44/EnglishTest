@@ -66,33 +66,32 @@ function draw(topic: TopicId, count: number, used: Set<string>): Question[] {
   return picked;
 }
 
-function build(weights: Record<TopicId, number>): Question[] {
-  const used = new Set<string>();
-  const questions = TOPIC_IDS.flatMap((topic) => draw(topic, weights[topic], used));
-  return questions;
-}
-
-/** The full length of an exam when every topic is selected. */
+/** The full length of each session when every topic is selected. */
 export const EXAM_LENGTH = Object.values(EXAM_WEIGHTS).reduce((a, b) => a + b, 0);
+export const DIAGNOSTIC_LENGTH = Object.values(DIAGNOSTIC_WEIGHTS).reduce((a, b) => a + b, 0);
+
+/** The diagnostic is meant to stay short, so it only covers so many topics. */
+export const MAX_DIAGNOSTIC_TOPICS = 10;
 
 /**
- * Splits `total` questions across `topics` in proportion to their exam weight,
- * never asking a topic for more questions than it actually has. Returns the
- * real total too, which is smaller than `total` when the selection is narrow.
+ * Splits `total` questions across `topics` in proportion to their weight, never
+ * asking a topic for more questions than it actually has. Returns the real
+ * total too, which is smaller than `total` when the selection is narrow.
  */
 function distribute(
   topics: TopicId[],
   total: number,
+  weights: Record<TopicId, number>,
 ): { counts: Map<TopicId, number>; total: number } {
   const available = new Map(topics.map((t) => [t, questionsByTopic(t).length]));
   const capacity = topics.reduce((sum, t) => sum + available.get(t)!, 0);
   const target = Math.min(total, capacity);
-  const weightSum = topics.reduce((sum, t) => sum + EXAM_WEIGHTS[t], 0);
+  const weightSum = topics.reduce((sum, t) => sum + weights[t], 0);
 
   const counts = new Map<TopicId, number>();
   let assigned = 0;
   for (const topic of topics) {
-    const share = Math.floor((EXAM_WEIGHTS[topic] / weightSum) * target);
+    const share = Math.floor((weights[topic] / weightSum) * target);
     const count = Math.min(available.get(topic)!, share);
     counts.set(topic, count);
     assigned += count;
@@ -110,15 +109,40 @@ function distribute(
   return { counts, total: assigned };
 }
 
+function pick(
+  topics: TopicId[],
+  total: number,
+  weights: Record<TopicId, number>,
+): Question[] {
+  const { counts } = distribute(topics, total, weights);
+  const used = new Set<string>();
+  return topics.flatMap((topic) => draw(topic, counts.get(topic)!, used));
+}
+
 /** How many questions an exam limited to these topics would actually have. */
 export function examLengthFor(topics: TopicId[]): number {
   const selected = topics.length > 0 ? topics : TOPIC_IDS;
-  return distribute(selected, EXAM_LENGTH).total;
+  return distribute(selected, EXAM_LENGTH, EXAM_WEIGHTS).total;
 }
 
-/** 15 questions covering every topic, ordered from easy to hard. */
-export function generateDiagnostic(): Question[] {
-  const questions = build(DIAGNOSTIC_WEIGHTS);
+/** How many questions a diagnostic limited to these topics would have. */
+export function diagnosticLengthFor(topics: TopicId[]): number {
+  const selected = topics.length > 0 ? topics : defaultDiagnosticTopics();
+  return distribute(selected, DIAGNOSTIC_LENGTH, DIAGNOSTIC_WEIGHTS).total;
+}
+
+/** The topics the diagnostic starts with — the first ten, in course order. */
+export function defaultDiagnosticTopics(): TopicId[] {
+  return TOPIC_IDS.slice(0, MAX_DIAGNOSTIC_TOPICS);
+}
+
+/**
+ * Questions ordered from easy to hard. Pass a subset of topics to find your
+ * level on just those; the default is the first ten topics.
+ */
+export function generateDiagnostic(topics: TopicId[] = defaultDiagnosticTopics()): Question[] {
+  const selected = topics.length > 0 ? topics : defaultDiagnosticTopics();
+  const questions = pick(selected, DIAGNOSTIC_LENGTH, DIAGNOSTIC_WEIGHTS);
   return shuffle(questions).sort((a, b) => a.difficulty - b.difficulty);
 }
 
@@ -128,7 +152,5 @@ export function generateDiagnostic(): Question[] {
  */
 export function generateExam(topics: TopicId[] = TOPIC_IDS): Question[] {
   const selected = topics.length > 0 ? topics : TOPIC_IDS;
-  const { counts } = distribute(selected, EXAM_LENGTH);
-  const used = new Set<string>();
-  return shuffle(selected.flatMap((topic) => draw(topic, counts.get(topic)!, used)));
+  return shuffle(pick(selected, EXAM_LENGTH, EXAM_WEIGHTS));
 }

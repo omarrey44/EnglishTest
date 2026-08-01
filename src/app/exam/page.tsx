@@ -1,18 +1,18 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ArrowRight, Check, EyeOff, ListChecks, Timer } from "lucide-react";
+import { ArrowRight, EyeOff, ListChecks, Timer } from "lucide-react";
 import type { TopicId } from "@/types/question";
 import { SessionRunner, type SessionSummary } from "@/components/questions/SessionRunner";
 import { ResultsScreen } from "@/components/exam/ResultsScreen";
+import { TopicPicker } from "@/components/questions/TopicPicker";
 import { Loading } from "@/components/ui/Loading";
 import { Eyebrow } from "@/components/ui/Card";
 import { Button, ButtonLink } from "@/components/ui/Button";
 import { useProgress } from "@/components/progress/ProgressProvider";
 import { examLengthFor, generateExam } from "@/lib/examGenerator";
-import { TOPICS, TOPIC_IDS } from "@/data/topics";
+import { TOPIC_IDS } from "@/data/topics";
 import { AppHeader } from "@/components/dashboard/AppHeader";
-import { cn } from "@/lib/cn";
 
 export default function ExamPage() {
   const { ready, saveExam } = useProgress();
@@ -30,14 +30,6 @@ export default function ExamPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [ready, started, round],
   );
-
-  const toggle = (topic: TopicId) => {
-    setSelected((current) =>
-      current.includes(topic)
-        ? current.filter((t) => t !== topic)
-        : TOPIC_IDS.filter((t) => t === topic || current.includes(t)),
-    );
-  };
 
   if (summary) {
     return (
@@ -81,63 +73,20 @@ export default function ExamPage() {
                 your score at the end.
               </p>
 
-              {/* ---- Topic picker ------------------------------------------ */}
-              <section className="mt-10">
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                  <Eyebrow>Topics in this exam</Eyebrow>
-                  <span aria-hidden className="leader" />
-                  <span className="index tabular text-muted">
-                    {selected.length} of {TOPIC_IDS.length}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setSelected(allSelected ? [] : TOPIC_IDS)}
-                    className="index text-accent underline underline-offset-4 hover:text-ink"
-                  >
-                    {allSelected ? "Clear all" : "Select all"}
-                  </button>
-                </div>
-
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {TOPICS.map((topic) => {
-                    const on = selected.includes(topic.id);
-                    return (
-                      <button
-                        key={topic.id}
-                        type="button"
-                        onClick={() => toggle(topic.id)}
-                        aria-pressed={on}
-                        className={cn(
-                          "inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-medium transition-colors",
-                          on
-                            ? "border-transparent text-white"
-                            : "border-line bg-surface text-muted hover:border-accent/40 hover:text-ink",
-                        )}
-                        style={on ? { background: topic.accent } : undefined}
-                      >
-                        {on ? (
-                          <Check className="size-3.5" />
-                        ) : (
-                          <span
-                            aria-hidden
-                            className="size-2 rounded-full"
-                            style={{ background: topic.accent }}
-                          />
-                        )}
-                        {topic.short}
-                      </button>
-                    );
-                  })}
-                </div>
-
-                <p className="mt-3 text-sm text-muted">
-                  {selected.length === 0
-                    ? "Pick at least one topic — with none selected the exam covers everything."
-                    : allSelected
-                      ? "Every topic, the way the real exam works."
-                      : `Only these ${selected.length} topics will come up, ${length} questions in total.`}
-                </p>
-              </section>
+              <div className="mt-10">
+                <TopicPicker
+                  selected={selected}
+                  onChange={setSelected}
+                  title="Topics in this exam"
+                  hint={
+                    selected.length === 0
+                      ? "Pick at least one topic — with none selected the exam covers everything."
+                      : allSelected
+                        ? "Every topic, the way the real exam works."
+                        : `Only these ${selected.length} topics will come up, ${length} questions in total.`
+                  }
+                />
+              </div>
 
               <ul className="mt-10">
                 {[

@@ -16,7 +16,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useProgress } from "@/components/progress/ProgressProvider";
 import { SkillsGrid } from "@/components/progress/SkillCard";
-import { SectionTitle } from "@/components/ui/Card";
+import { Eyebrow, SectionTitle } from "@/components/ui/Card";
 import { StatTile } from "@/components/ui/Badge";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { TextLink } from "@/components/ui/Button";
@@ -78,7 +78,7 @@ export function Dashboard() {
             <div className="glass rounded-[28px] p-5 sm:p-7 lg:ml-auto lg:max-w-[620px]">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                  <p className="index text-muted">Your current level</p>
+                  <Eyebrow>Your current level</Eyebrow>
                   <div className="mt-2 flex items-end gap-2">
                     <p className="tabular font-display text-[5.8rem] leading-[.8] tracking-[-.06em]">{readiness}</p>
                     <span className="pb-1 text-xl font-semibold">%</span>

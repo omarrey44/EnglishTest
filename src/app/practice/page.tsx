@@ -153,7 +153,14 @@ function PracticeInner() {
           </ul>
 
           <div className="mt-9 flex flex-col gap-2.5 sm:flex-row">
-            <Button size="lg" className="flex-1" onClick={() => setStarted(true)}>
+            <Button
+              size="lg"
+              className="flex-1"
+              onClick={() => {
+                setStarted(true);
+                requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "instant" }));
+              }}
+            >
               Start session
               <ArrowRight className="size-4" />
             </Button>

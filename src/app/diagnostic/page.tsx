@@ -93,7 +93,10 @@ export default function DiagnosticPage() {
                   size="lg"
                   className="flex-1"
                   disabled={selected.length === 0}
-                  onClick={() => setStarted(true)}
+                  onClick={() => {
+                    setStarted(true);
+                    requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "instant" }));
+                  }}
                 >
                   Start diagnostic · {length} questions
                   <ArrowRight className="size-4" />

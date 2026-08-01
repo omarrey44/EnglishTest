@@ -16,6 +16,7 @@ import {
 import type { TopicProgress } from "@/types/progress";
 import { SegmentBar } from "@/components/ui/ProgressBar";
 import { Badge } from "@/components/ui/Badge";
+import { TopicNumber } from "@/components/ui/Card";
 import { MASTERY_LABEL, MASTERY_TONE } from "@/lib/scoring";
 import { TOPIC_MAP, TOPIC_IDS } from "@/data/topics";
 
@@ -36,7 +37,7 @@ export function SkillCard({ progress }: { progress: TopicProgress }) {
   return (
     <Link
       href={`/learn/${progress.topic}`}
-      className="press-soft group relative flex min-h-[190px] h-full flex-col justify-between overflow-hidden rounded-2xl border border-line bg-white p-4 hover:border-accent/30 sm:p-5"
+      className="press-soft group relative flex h-full min-h-[240px] flex-col justify-between overflow-hidden rounded-2xl border border-line bg-white p-4 hover:border-accent/30 sm:p-5"
     >
       {/* Topic ink, printed down the spine of the card. */}
       <span
@@ -45,18 +46,30 @@ export function SkillCard({ progress }: { progress: TopicProgress }) {
         style={{ background: `linear-gradient(90deg, ${topic.accent}, color-mix(in srgb, ${topic.accent} 25%, white))` }}
       />
 
-      <div className="flex items-start gap-3">
-        <span className="grid size-11 shrink-0 place-items-center rounded-2xl" style={{ color: topic.accent, background: `color-mix(in srgb, ${topic.accent} 11%, white)` }}>
-          <Icon className="size-5" />
-        </span>
-        <div className="min-w-0">
-          <span className="index tabular text-muted">{number}</span>
-          <p className="mt-1 leading-tight font-semibold tracking-[-0.01em]">{topic.name}</p>
+      <div>
+        <div className="flex items-start justify-between gap-3">
+          <span
+            className="grid size-12 shrink-0 place-items-center rounded-2xl border"
+            style={{
+              color: topic.accent,
+              borderColor: `color-mix(in srgb, ${topic.accent} 16%, white)`,
+              background: `color-mix(in srgb, ${topic.accent} 10%, white)`,
+            }}
+          >
+            <Icon className="size-5" />
+          </span>
+          <TopicNumber value={number} tone={topic.accent} />
+        </div>
+
+        <div className="mt-3.5 min-w-0">
+          <p className="text-[1.02rem] leading-tight font-semibold tracking-[-0.015em]">
+            {topic.name}
+          </p>
           <p className="mt-1 text-xs text-muted italic">{topic.spanishName}</p>
         </div>
       </div>
 
-      <div className="mt-6">
+      <div className="mt-5">
         <SegmentBar value={progress.accuracy} tone={TONE_BY_LEVEL[progress.level]} />
         <div className="mt-3 flex items-baseline justify-between gap-2">
           <span className="tabular font-display text-2xl leading-none tracking-[-0.02em]">

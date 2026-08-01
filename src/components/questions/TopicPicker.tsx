@@ -40,19 +40,21 @@ export function TopicPicker({
 
   return (
     <section>
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+      <div className="flex flex-wrap items-center gap-3">
         <Eyebrow>{title}</Eyebrow>
         <span aria-hidden className="leader" />
-        <span className="index tabular text-muted">
-          {selected.length} of {limit}
-        </span>
-        <button
-          type="button"
-          onClick={() => onChange(allSelected ? [] : TOPIC_IDS.slice(0, limit))}
-          className="index text-accent underline underline-offset-4 hover:text-ink"
-        >
-          {allSelected ? "Clear all" : `Select ${limit}`}
-        </button>
+        <div className="flex shrink-0 items-center gap-3">
+          <span className="index tabular text-muted">
+            {selected.length} of {limit}
+          </span>
+          <button
+            type="button"
+            onClick={() => onChange(allSelected ? [] : TOPIC_IDS.slice(0, limit))}
+            className="index text-accent underline underline-offset-4 hover:text-ink"
+          >
+            {allSelected ? "Clear all" : `Select ${limit}`}
+          </button>
+        </div>
       </div>
 
       <div className="mt-4 flex flex-wrap gap-2">

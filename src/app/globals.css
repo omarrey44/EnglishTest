@@ -52,7 +52,6 @@ html {
 }
 
 body {
-  min-width: 320px;
   background:
     radial-gradient(circle at 5% 0%, rgba(74, 153, 255, 0.1), transparent 25rem),
     radial-gradient(circle at 100% 30%, rgba(234, 174, 103, 0.09), transparent 28rem),

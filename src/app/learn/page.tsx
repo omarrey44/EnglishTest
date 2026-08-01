@@ -5,7 +5,7 @@ import { ArrowUpRight } from "lucide-react";
 import { useProgress } from "@/components/progress/ProgressProvider";
 import { getTopicProgress } from "@/lib/adaptiveLearning";
 import { Badge } from "@/components/ui/Badge";
-import { Eyebrow } from "@/components/ui/Card";
+import { Eyebrow, TopicNumber } from "@/components/ui/Card";
 import { SegmentBar } from "@/components/ui/ProgressBar";
 import { MASTERY_LABEL, MASTERY_TONE } from "@/lib/scoring";
 import { TOPIC_MAP } from "@/data/topics";
@@ -46,12 +46,10 @@ export default function LearnIndexPage() {
                 href={`/learn/${progress.topic}`}
                 className="press-soft group flex h-full items-start gap-4 rounded-2xl border border-line bg-white p-5 transition-colors hover:border-accent/30"
               >
-                <span
-                  className="index tabular mt-1 w-6 shrink-0"
-                  style={{ color: meta.accent }}
-                >
-                  {String(i + 1).padStart(2, "0")}
-                </span>
+                <TopicNumber
+                  value={String(i + 1).padStart(2, "0")}
+                  tone={meta.accent}
+                />
 
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-x-3 gap-y-2">

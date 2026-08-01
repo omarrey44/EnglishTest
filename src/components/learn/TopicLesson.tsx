@@ -41,7 +41,9 @@ export function TopicLesson({ topic }: { topic: TopicId }) {
       {/* ---- Chapter head -------------------------------------------------- */}
       <header className="mt-8 rounded-3xl border border-line bg-white p-6 shadow-card sm:p-8">
         <div className="flex items-center gap-4">
-          <Eyebrow tone={meta.accent}>Chapter {chapter}</Eyebrow>
+          <Eyebrow tone={meta.accent}>
+            Chapter {chapter} of {TOPIC_IDS.length}
+          </Eyebrow>
           <span aria-hidden className="leader" />
           <span className="index text-muted italic">{meta.spanishName}</span>
         </div>
@@ -59,7 +61,16 @@ export function TopicLesson({ topic }: { topic: TopicId }) {
       <section className="mt-6 rounded-3xl border border-line bg-surface p-5 shadow-card sm:p-6">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <Eyebrow>Your score</Eyebrow>
+            <Eyebrow>
+              {progress.attempted === 0
+                ? "Not practiced yet"
+                : progress.level === "mastered"
+                  ? "Mastered — stay above 95%"
+                  : progress.accuracy >= 95
+                    ? // Accurate already, but mastery also needs a real sample.
+                      `Answer ${4 - progress.attempted} more to lock in mastery`
+                    : `${95 - progress.accuracy} points from mastered`}
+            </Eyebrow>
             <p className="tabular mt-2.5 font-display text-[3rem] leading-none tracking-[-0.04em]">
               {ready && progress.attempted > 0 ? `${progress.accuracy}%` : "—"}
             </p>

@@ -1,7 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { GUEST_COOKIE } from "@/lib/auth/guest";
 import { getServerSupabase } from "@/lib/supabase/server";
 import {
   emailForUsername,
@@ -53,6 +55,7 @@ export async function signIn(
     return { error: "Wrong username or password." };
   }
 
+  (await cookies()).delete(GUEST_COOKIE);
   revalidatePath("/", "layout");
   redirect("/");
 }
@@ -104,6 +107,21 @@ export async function signUp(
     };
   }
 
+  (await cookies()).delete(GUEST_COOKIE);
+  revalidatePath("/", "layout");
+  redirect("/");
+}
+
+export async function continueAsGuest() {
+  const cookieStore = await cookies();
+  cookieStore.set(GUEST_COOKIE, "1", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 30,
+  });
+
   revalidatePath("/", "layout");
   redirect("/");
 }
@@ -111,6 +129,7 @@ export async function signUp(
 export async function signOut() {
   const supabase = await getServerSupabase();
   if (supabase) await supabase.auth.signOut();
+  (await cookies()).delete(GUEST_COOKIE);
   revalidatePath("/", "layout");
-  redirect("/");
+  redirect("/login");
 }

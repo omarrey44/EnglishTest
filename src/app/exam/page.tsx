@@ -56,7 +56,7 @@ export default function ExamPage() {
           <div className="rounded-3xl border border-line bg-white p-6 shadow-card sm:p-10">
             <div className="rise">
               <div className="flex items-center gap-4">
-                <Eyebrow>Exam simulator</Eyebrow>
+                <Eyebrow>No answers until you finish — like the real thing</Eyebrow>
                 <span aria-hidden className="leader" />
                 <span className="index tabular text-muted">{length} Q</span>
               </div>

@@ -25,12 +25,16 @@ export default function ReviewPage() {
 
       <header className="mt-8 rounded-3xl border border-line bg-white p-6 shadow-card sm:p-8">
         <div className="flex items-center gap-4">
-          <Eyebrow>{open.length} open</Eyebrow>
+          <Eyebrow>
+            {open.length === 0
+              ? "Nothing left to retry"
+              : `${open.length} ${open.length === 1 ? "rule" : "rules"} still to retry`}
+          </Eyebrow>
           <span aria-hidden className="leader" />
           <span className="index text-muted">{resolved.length} fixed</span>
         </div>
         <h1 className="mt-3 font-display text-[2.75rem] leading-[0.9] tracking-[-0.03em] sm:text-[3.5rem]">
-          Errata
+          Your mistakes
         </h1>
         <p className="mt-4 max-w-xl leading-relaxed text-muted">
           Every mistake stays here until you answer a different question on the same rule.
@@ -102,7 +106,10 @@ export default function ReviewPage() {
 
       {resolved.length > 0 ? (
         <section className="mt-14">
-          <SectionTitle index={`Fixed · ${resolved.length}`} title="Rules you repaired" />
+          <SectionTitle
+            index="You got these right on a second question"
+            title="Rules you repaired"
+          />
           <ul>
             {resolved.slice(0, 12).map((mistake, i) => (
               <li

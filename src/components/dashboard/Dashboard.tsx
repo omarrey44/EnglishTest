@@ -38,6 +38,8 @@ export function Dashboard() {
   const readiness = getReadiness(state);
   const accuracy = accuracyOf(state.correctAnswers, state.questionsAnswered);
   const openMistakes = state.mistakes.filter((m) => !m.resolved).length;
+  const masteredCount = topics.filter((t) => t.level === "mastered").length;
+  const weakCount = topics.filter((t) => t.level === "weak" || t.level === "new").length;
   const lastExam = state.examResults[0];
 
   return (
@@ -78,7 +80,11 @@ export function Dashboard() {
             <div className="glass rounded-[28px] p-5 sm:p-7 lg:ml-auto lg:max-w-[620px]">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                  <Eyebrow>Your current level</Eyebrow>
+                  <Eyebrow>
+                    {readiness >= 95
+                      ? "Safe for a 10 — keep it there"
+                      : `${95 - readiness} points from a safe 10`}
+                  </Eyebrow>
                   <div className="mt-2 flex items-end gap-2">
                     <p className="tabular font-display text-[5.8rem] leading-[.8] tracking-[-.06em]">{readiness}</p>
                     <span className="pb-1 text-xl font-semibold">%</span>
@@ -148,8 +154,12 @@ export function Dashboard() {
 
         <section className="mt-14">
           <SectionTitle
-            index="Your learning journey"
-            title="Ten topics. One clear path."
+            index={
+              masteredCount > 0
+                ? `${masteredCount} of ${topics.length} topics mastered`
+                : `${weakCount} topics still need work`
+            }
+            title={`${topics.length} topics. One clear path.`}
             hint="Continue where you left off, or focus on the topics that need the most attention."
             action={<TextLink href="/learn">All lessons</TextLink>}
           />

@@ -51,7 +51,9 @@ export function ResultsScreen({
           <span className="index text-[0.8rem]">{passing ? "Exam ready" : "Keep going"}</span>
         </div>
 
-        <Eyebrow>Final score</Eyebrow>
+        <Eyebrow>
+          {summary.correct} of {summary.total} right, on the exam&apos;s 10-point scale
+        </Eyebrow>
         <p className="tabular mt-4 font-display text-[6rem] leading-[0.76] tracking-[-0.05em] sm:text-[8rem]">
           {summary.score.toFixed(1)}
           <span className="text-[0.3em] tracking-[-0.02em] text-muted">/10</span>
@@ -72,7 +74,7 @@ export function ResultsScreen({
 
       {/* ---- Topic breakdown ---------------------------------------------- */}
       <section className="mt-14">
-        <SectionTitle index="Breakdown" title="Topics to review" />
+        <SectionTitle index="Weakest first" title="Topics to review" />
         <ul>
           {topics.map((t, i) => (
             <li
@@ -113,7 +115,7 @@ export function ResultsScreen({
       {wrongAnswers.length > 0 ? (
         <section className="mt-14">
           <SectionTitle
-            index={`Errata · ${wrongAnswers.length}`}
+            index={`${wrongAnswers.length} to fix before the exam`}
             title="What went wrong"
             hint="Read the rule, then practice the same rule on a different question."
           />

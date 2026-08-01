@@ -24,7 +24,7 @@ export default function LearnIndexPage() {
       <BackLink href="/">Dashboard</BackLink>
 
       <header className="mt-8 rounded-3xl border border-line bg-white p-6 shadow-card sm:p-8">
-        <Eyebrow>Section 01 · Reference</Eyebrow>
+        <Eyebrow>Every rule the exam asks about, in {topics.length} chapters</Eyebrow>
         <h1 className="mt-3 font-display text-[2.75rem] leading-[0.9] tracking-[-0.03em] sm:text-[3.5rem]">
           Lessons
         </h1>

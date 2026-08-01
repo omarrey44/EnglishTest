@@ -47,7 +47,7 @@ export default function DiagnosticPage() {
           <div className="rounded-3xl border border-line bg-white p-6 shadow-card sm:p-10">
             <div className="rise">
               <div className="flex items-center gap-4">
-                <Eyebrow>Free diagnostic</Eyebrow>
+                <Eyebrow>Answer honestly — this picks what you practice next</Eyebrow>
                 <span aria-hidden className="leader" />
                 <span className="index tabular text-muted">{length} Q</span>
               </div>

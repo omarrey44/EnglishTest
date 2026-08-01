@@ -12,9 +12,11 @@ import { TOPIC_MAP } from "@/data/topics";
 import { LESSONS } from "@/data/lessons";
 import { AppHeader } from "@/components/dashboard/AppHeader";
 import { BackLink } from "@/components/ui/Button";
+import { useDisplayName } from "@/components/auth/useDisplayName";
 
 export default function LearnIndexPage() {
   const { state } = useProgress();
+  const { name } = useDisplayName();
   const topics = getTopicProgress(state);
 
   return (
@@ -26,7 +28,15 @@ export default function LearnIndexPage() {
       <header className="mt-8 rounded-3xl border border-line bg-white p-6 shadow-card sm:p-8">
         <Eyebrow>Every rule the exam asks about, in {topics.length} chapters</Eyebrow>
         <h1 className="mt-3 font-display text-[2.75rem] leading-[0.9] tracking-[-0.03em] sm:text-[3.5rem]">
-          Lessons
+          {name ? (
+            <>
+              Your lessons,
+              <br />
+              <span className="italic text-accent">{name}</span>
+            </>
+          ) : (
+            "Lessons"
+          )}
         </h1>
         <p className="mt-4 max-w-xl leading-relaxed text-muted">
           Every rule the exam covers, with examples and a practice set at the end of each page.

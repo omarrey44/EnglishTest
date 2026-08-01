@@ -14,9 +14,11 @@ import { MASTERY_LABEL, MASTERY_TONE } from "@/lib/scoring";
 import { EdSoundTrainer } from "./EdSoundTrainer";
 import { questionsByTopic } from "@/data/questions";
 import { AppHeader } from "@/components/dashboard/AppHeader";
+import { useDisplayName } from "@/components/auth/useDisplayName";
 
 export function TopicLesson({ topic }: { topic: TopicId }) {
   const { state, ready } = useProgress();
+  const { name } = useDisplayName();
   const meta = TOPIC_MAP[topic];
   const lesson = LESSONS[topic];
   const progress = getTopicProgress(state).find((p) => p.topic === topic)!;
@@ -78,9 +80,14 @@ export function TopicLesson({ topic }: { topic: TopicId }) {
               {progress.correct} of {progress.attempted} correct
             </p>
           </div>
-          <Badge className={MASTERY_TONE[progress.level]}>
-            {MASTERY_LABEL[progress.level]}
-          </Badge>
+          <div className="flex flex-col items-end gap-2">
+            {name ? (
+              <span className="index max-w-[12rem] truncate text-muted">{name}</span>
+            ) : null}
+            <Badge className={MASTERY_TONE[progress.level]}>
+              {MASTERY_LABEL[progress.level]}
+            </Badge>
+          </div>
         </div>
 
         <div className="mt-5">

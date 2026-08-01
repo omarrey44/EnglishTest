@@ -9,6 +9,10 @@ import { edSpellingQuestions } from "./edSpelling";
 import { edPronunciationQuestions } from "./edPronunciation";
 import { wasWereQuestions } from "./wasWere";
 import { whQuestions } from "./whQuestions";
+import { irregularVerbQuestions } from "./irregularVerbs";
+import { pastNegativeQuestions } from "./pastNegative";
+import { sequenceWordQuestions } from "./sequenceWords";
+import { clothesQuestions } from "./clothes";
 
 export const QUESTIONS: Question[] = [
   ...ordinalQuestions,
@@ -21,6 +25,10 @@ export const QUESTIONS: Question[] = [
   ...edPronunciationQuestions,
   ...wasWereQuestions,
   ...whQuestions,
+  ...irregularVerbQuestions,
+  ...pastNegativeQuestions,
+  ...sequenceWordQuestions,
+  ...clothesQuestions,
 ];
 
 export const QUESTION_MAP: Map<string, Question> = new Map(

@@ -7,28 +7,36 @@ import { shuffle } from "./adaptiveLearning";
 const DIAGNOSTIC_WEIGHTS: Record<TopicId, number> = {
   ordinals: 1,
   weather: 1,
-  dates: 2,
+  dates: 1,
   years: 1,
   andBut: 1,
-  pastVerbs: 2,
+  pastVerbs: 1,
+  irregularVerbs: 2,
+  pastNegative: 1,
   edSpelling: 1,
-  edPronunciation: 2,
-  wasWere: 3,
+  edPronunciation: 1,
+  wasWere: 1,
   whQuestions: 1,
+  sequenceWords: 1,
+  clothes: 1,
 };
 
 /** Exam simulator distribution (30 questions, every topic covered). */
 const EXAM_WEIGHTS: Record<TopicId, number> = {
   ordinals: 2,
   weather: 2,
-  dates: 4,
+  dates: 3,
   years: 2,
   andBut: 2,
-  pastVerbs: 4,
+  pastVerbs: 2,
+  irregularVerbs: 3,
+  pastNegative: 2,
   edSpelling: 2,
-  edPronunciation: 4,
-  wasWere: 5,
-  whQuestions: 3,
+  edPronunciation: 2,
+  wasWere: 2,
+  whQuestions: 2,
+  sequenceWords: 2,
+  clothes: 2,
 };
 
 function draw(topic: TopicId, count: number, used: Set<string>): Question[] {
@@ -64,13 +72,63 @@ function build(weights: Record<TopicId, number>): Question[] {
   return questions;
 }
 
+/** The full length of an exam when every topic is selected. */
+export const EXAM_LENGTH = Object.values(EXAM_WEIGHTS).reduce((a, b) => a + b, 0);
+
+/**
+ * Splits `total` questions across `topics` in proportion to their exam weight,
+ * never asking a topic for more questions than it actually has. Returns the
+ * real total too, which is smaller than `total` when the selection is narrow.
+ */
+function distribute(
+  topics: TopicId[],
+  total: number,
+): { counts: Map<TopicId, number>; total: number } {
+  const available = new Map(topics.map((t) => [t, questionsByTopic(t).length]));
+  const capacity = topics.reduce((sum, t) => sum + available.get(t)!, 0);
+  const target = Math.min(total, capacity);
+  const weightSum = topics.reduce((sum, t) => sum + EXAM_WEIGHTS[t], 0);
+
+  const counts = new Map<TopicId, number>();
+  let assigned = 0;
+  for (const topic of topics) {
+    const share = Math.floor((EXAM_WEIGHTS[topic] / weightSum) * target);
+    const count = Math.min(available.get(topic)!, share);
+    counts.set(topic, count);
+    assigned += count;
+  }
+
+  // Hand out what rounding left over, one at a time, to topics with room left.
+  for (let i = 0; assigned < target && i < topics.length * 64; i += 1) {
+    const topic = topics[i % topics.length];
+    if (counts.get(topic)! < available.get(topic)!) {
+      counts.set(topic, counts.get(topic)! + 1);
+      assigned += 1;
+    }
+  }
+
+  return { counts, total: assigned };
+}
+
+/** How many questions an exam limited to these topics would actually have. */
+export function examLengthFor(topics: TopicId[]): number {
+  const selected = topics.length > 0 ? topics : TOPIC_IDS;
+  return distribute(selected, EXAM_LENGTH).total;
+}
+
 /** 15 questions covering every topic, ordered from easy to hard. */
 export function generateDiagnostic(): Question[] {
   const questions = build(DIAGNOSTIC_WEIGHTS);
   return shuffle(questions).sort((a, b) => a.difficulty - b.difficulty);
 }
 
-/** 30 mixed questions, no feedback during the exam. */
-export function generateExam(): Question[] {
-  return shuffle(build(EXAM_WEIGHTS));
+/**
+ * Mixed questions with no feedback during the exam. Pass a subset of topics to
+ * sit a shorter exam on just those; the default is every topic.
+ */
+export function generateExam(topics: TopicId[] = TOPIC_IDS): Question[] {
+  const selected = topics.length > 0 ? topics : TOPIC_IDS;
+  const { counts } = distribute(selected, EXAM_LENGTH);
+  const used = new Set<string>();
+  return shuffle(selected.flatMap((topic) => draw(topic, counts.get(topic)!, used)));
 }

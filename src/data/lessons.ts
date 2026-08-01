@@ -243,6 +243,113 @@ export const LESSONS: Record<TopicId, Lesson> = {
     ],
   },
 
+  irregularVerbs: {
+    topic: "irregularVerbs",
+    intro:
+      "Irregular verbs do not take -ed in the past. There is no rule — each one has its own form, and you learn them by heart.",
+    sections: [
+      {
+        title: "The core list",
+        body: "These fourteen appear in almost every exam.",
+        examples: [
+          { left: "begin", right: "began" },
+          { left: "buy", right: "bought" },
+          { left: "do", right: "did" },
+          { left: "get", right: "got" },
+          { left: "go", right: "went" },
+          { left: "have", right: "had" },
+          { left: "know", right: "knew" },
+          { left: "lose", right: "lost" },
+          { left: "make", right: "made" },
+          { left: "see", right: "saw" },
+          { left: "spend", right: "spent" },
+          { left: "take", right: "took" },
+          { left: "think", right: "thought" },
+          { left: "write", right: "wrote" },
+        ],
+      },
+      {
+        title: "Groups that help you remember",
+        bullets: [
+          "-ought / -aught: buy → bought, think → thought, bring → brought, teach → taught, catch → caught",
+          "-elt / -ept / -ent: feel → felt, sleep → slept, send → sent, spend → spent",
+          "i → a → u pattern: begin → began, drink → drank, sing → sang, swim → swam, run → ran",
+          "No change at all: put → put, cut → cut, read → read (but the sound changes to /red/)",
+        ],
+      },
+      {
+        title: "More you should know",
+        examples: [
+          { left: "come", right: "came" },
+          { left: "eat", right: "ate" },
+          { left: "find", right: "found" },
+          { left: "give", right: "gave" },
+          { left: "leave", right: "left" },
+          { left: "meet", right: "met" },
+          { left: "pay", right: "paid" },
+          { left: "say", right: "said", note: "sounds like /sed/" },
+          { left: "sell", right: "sold" },
+          { left: "sit", right: "sat" },
+          { left: "speak", right: "spoke" },
+          { left: "tell", right: "told" },
+          { left: "wear", right: "wore" },
+          { left: "win", right: "won" },
+        ],
+      },
+      {
+        title: "The trap",
+        body: "The irregular form is only for the affirmative. After didn't or Did, the verb goes back to the base form.",
+        examples: [
+          { left: "I went to the party.", right: "I didn't go to the party." },
+          { left: "She bought a car.", right: "Did she buy a car?" },
+          { left: "not: I didn't went", right: "not: Did she bought?" },
+        ],
+      },
+    ],
+  },
+
+  pastNegative: {
+    topic: "pastNegative",
+    intro:
+      "The past negative is always the same: subject + didn't + the base form of the verb. It does not matter whether the verb is regular or irregular.",
+    sections: [
+      {
+        title: "The formula",
+        body: "Subject (I, you, he, she, it, we, they) + didn't + base verb.",
+        examples: [
+          { left: "I didn't have brothers or sisters.", right: "No tenía hermanos ni hermanas." },
+          { left: "She didn't work at the studio.", right: "Ella no trabajaba en el estudio." },
+          { left: "They didn't arrive on time.", right: "No llegaron a tiempo." },
+        ],
+      },
+      {
+        title: "Same form for regular and irregular",
+        body: "This is the good news: you do not need the irregular past form in a negative sentence.",
+        examples: [
+          { left: "I didn't play baseball.", right: "not: I didn't played baseball." },
+          { left: "I didn't speak English.", right: "not: I didn't spoke English." },
+          { left: "We didn't go home.", right: "not: We didn't went home." },
+        ],
+      },
+      {
+        title: "didn't = did not",
+        body: "The short form is normal in speech and in most writing. The long form is more formal or emphatic.",
+        examples: [
+          { left: "He didn't call me.", right: "He did not call me." },
+          { left: "It didn't rain.", right: "It did not rain." },
+        ],
+      },
+      {
+        title: "One exception: was / were",
+        body: "The verb \"be\" does not use didn't. It makes its own negative.",
+        examples: [
+          { left: "I wasn't at home.", right: "not: I didn't be at home." },
+          { left: "They weren't ready.", right: "not: They didn't were ready." },
+        ],
+      },
+    ],
+  },
+
   edSpelling: {
     topic: "edSpelling",
     intro: "Four spelling patterns cover every regular verb in the past.",
@@ -382,6 +489,103 @@ export const LESSONS: Record<TopicId, Lesson> = {
           "\"It was on May 3rd.\" → When was it?",
           "\"My sister.\" → Who was with you?",
           "\"Because I was sick.\" → Why were you absent?",
+        ],
+      },
+    ],
+  },
+
+  sequenceWords: {
+    topic: "sequenceWords",
+    intro:
+      "Sequence words connect events and show the reader the order they happened in: then, next, after that, later. They turn a list of sentences into a story.",
+    sections: [
+      {
+        title: "The basic four",
+        examples: [
+          { left: "then", right: "luego — the very next thing" },
+          { left: "next", right: "después — the next step in a list" },
+          { left: "after that", right: "después de eso — after the previous event" },
+          { left: "later", right: "más tarde — some time afterwards" },
+        ],
+      },
+      {
+        title: "Where they go, and the comma",
+        body: "At the start of a sentence they take a comma. After \"and\" they do not.",
+        examples: [
+          { left: "After that, I went to the University of Lisbon.", right: "comma after the phrase" },
+          { left: "Next, I decided to come to the United States.", right: "comma after the word" },
+          { left: "I finished college in 2002, and then I got a job.", right: "no comma after \"then\" here" },
+        ],
+      },
+      {
+        title: "Saying how much time passed",
+        body: "Use a quantity of time + later. This is the most precise option, so prefer it when you know the dates.",
+        examples: [
+          { left: "one year later", right: "1979 → 1980" },
+          { left: "two years later", right: "2014 → 2016" },
+          { left: "one month later", right: "March → April" },
+          { left: "Later, in 2014, Lisa and I got married.", right: "later + a specific year" },
+        ],
+      },
+      {
+        title: "Opening and closing a story",
+        bullets: [
+          "First, ... — the first event",
+          "Then / Next / After that, ... — the middle events",
+          "Finally, ... — the last event",
+        ],
+      },
+    ],
+  },
+
+  clothes: {
+    topic: "clothes",
+    intro:
+      "The clothes you wear, and the verbs that go with them. The trap for Spanish speakers is that some words are always plural, and that English uses \"wear\", not \"use\".",
+    sections: [
+      {
+        title: "Basic clothes",
+        examples: [
+          { left: "shirt", right: "camisa" },
+          { left: "T-shirt", right: "playera / camiseta" },
+          { left: "pants", right: "pantalones", note: "always plural" },
+          { left: "jeans", right: "jeans", note: "always plural" },
+          { left: "dress", right: "vestido" },
+          { left: "skirt", right: "falda" },
+          { left: "jacket", right: "chaqueta" },
+          { left: "coat", right: "abrigo" },
+          { left: "sweater", right: "suéter" },
+          { left: "shoes", right: "zapatos", note: "always plural" },
+          { left: "socks", right: "calcetines", note: "always plural" },
+          { left: "hat", right: "sombrero / gorro" },
+        ],
+      },
+      {
+        title: "Words that have no singular",
+        body: "Pants, jeans, shorts, shoes, socks, glasses and gloves come in twos. To count them use \"a pair of\".",
+        examples: [
+          { left: "a pair of pants", right: "not: a pant" },
+          { left: "two pairs of shoes", right: "not: two shoes pairs" },
+          { left: "My jeans are new.", right: "not: My jeans is new." },
+        ],
+      },
+      {
+        title: "The verbs",
+        examples: [
+          { left: "wear", right: "llevar puesto — the state", note: "past: wore" },
+          { left: "put on", right: "ponerse — the action of starting" },
+          { left: "take off", right: "quitarse — the action of removing" },
+          { left: "try on", right: "probarse (in a store)" },
+          { left: "I wore a blue jacket.", right: "not: I used a blue jacket." },
+        ],
+      },
+      {
+        title: "Clothes and the weather",
+        bullets: [
+          "It was cold → a coat, a sweater, gloves, a scarf",
+          "It was hot → shorts, a T-shirt, sandals",
+          "It was raining → a raincoat, boots, an umbrella",
+          "It was sunny → sunglasses, a hat",
         ],
       },
     ],

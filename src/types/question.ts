@@ -8,7 +8,11 @@ export type TopicId =
   | "edSpelling"
   | "edPronunciation"
   | "wasWere"
-  | "whQuestions";
+  | "whQuestions"
+  | "irregularVerbs"
+  | "pastNegative"
+  | "sequenceWords"
+  | "clothes";
 
 export type QuestionType =
   | "multiple-choice"

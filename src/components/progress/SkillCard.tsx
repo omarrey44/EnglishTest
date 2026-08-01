@@ -1,22 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import {
-  ArrowRight,
-  CalendarDays,
-  CloudSun,
-  Hash,
-  Landmark,
-  MapPin,
-  MessageCircleQuestion,
-  Puzzle,
-  Star,
-  Users,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import type { TopicProgress } from "@/types/progress";
 import { SegmentBar } from "@/components/ui/ProgressBar";
 import { Badge } from "@/components/ui/Badge";
 import { TopicNumber } from "@/components/ui/Card";
+import { TopicIcon } from "@/components/ui/TopicIcon";
 import { MASTERY_LABEL, MASTERY_TONE } from "@/lib/scoring";
 import { TOPIC_MAP, TOPIC_IDS } from "@/data/topics";
 
@@ -31,8 +21,6 @@ const TONE_BY_LEVEL = {
 export function SkillCard({ progress }: { progress: TopicProgress }) {
   const topic = TOPIC_MAP[progress.topic];
   const number = String(TOPIC_IDS.indexOf(progress.topic) + 1).padStart(2, "0");
-  const icons = [Hash, CloudSun, CalendarDays, Landmark, Puzzle, Users, MessageCircleQuestion, MapPin, Star, CalendarDays];
-  const Icon = icons[TOPIC_IDS.indexOf(progress.topic)] ?? Star;
 
   return (
     <Link
@@ -56,7 +44,7 @@ export function SkillCard({ progress }: { progress: TopicProgress }) {
               background: `color-mix(in srgb, ${topic.accent} 10%, white)`,
             }}
           >
-            <Icon className="size-5" />
+            <TopicIcon topic={progress.topic} className="size-5" />
           </span>
           <TopicNumber value={number} tone={topic.accent} />
         </div>

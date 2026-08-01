@@ -35,7 +35,7 @@ export function createInitialProgress(): ProgressState {
 }
 
 /** Fills in anything missing so old saves keep working after an update. */
-function migrate(raw: Partial<ProgressState> | null): ProgressState {
+export function migrate(raw: Partial<ProgressState> | null): ProgressState {
   const base = createInitialProgress();
   if (!raw || typeof raw !== "object") return base;
 

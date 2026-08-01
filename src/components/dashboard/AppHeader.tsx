@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BookOpen, Flame, LayoutDashboard, LibraryBig, Menu, Trophy } from "lucide-react";
 import { useProgress } from "@/components/progress/ProgressProvider";
+import { AccountMenu, GuestBadge } from "@/components/auth/AccountMenu";
 
 const NAV = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -60,6 +61,8 @@ export function AppHeader({ compact = false }: { compact?: boolean }) {
             {state.xp}
             <span className="sr-only">experience points</span>
           </span>
+          <GuestBadge />
+          <AccountMenu />
           {!compact ? (
             <details className="relative lg:hidden">
               <summary className="grid min-h-11 min-w-11 cursor-pointer list-none place-items-center rounded-full border border-line bg-white">

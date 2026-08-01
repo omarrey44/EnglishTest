@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Instrument_Sans, JetBrains_Mono } from "next/font/google";
 import { ProgressProvider } from "@/components/progress/ProgressProvider";
+import { SessionProvider } from "@/components/auth/SessionProvider";
 import "./globals.css";
 
 // Display: a wonky, high-contrast workbook serif. The SOFT/WONK axes are what
@@ -54,7 +55,9 @@ export default function RootLayout({
       className={`${body.variable} ${display.variable} ${mono.variable} h-full`}
     >
       <body className="min-h-dvh antialiased">
-        <ProgressProvider>{children}</ProgressProvider>
+        <SessionProvider>
+          <ProgressProvider>{children}</ProgressProvider>
+        </SessionProvider>
       </body>
     </html>
   );

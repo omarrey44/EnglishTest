@@ -12,7 +12,10 @@ export type TopicId =
   | "irregularVerbs"
   | "pastNegative"
   | "sequenceWords"
-  | "clothes";
+  | "clothes"
+  | "countable"
+  | "quantifiers"
+  | "wouldLike";
 
 export type QuestionType =
   | "multiple-choice"

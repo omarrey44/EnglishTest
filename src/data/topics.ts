@@ -127,6 +127,33 @@ export const TOPICS: TopicMeta[] = [
     icon: "Shirt",
     accent: "#B0446E",
   },
+  {
+    id: "countable",
+    name: "Countable & Uncountable",
+    spanishName: "Sustantivos contables e incontables",
+    short: "Countable",
+    description: "an egg / two eggs, but only bread — and some vs. any.",
+    icon: "Boxes",
+    accent: "#1F7A6B",
+  },
+  {
+    id: "quantifiers",
+    name: "How much / How many",
+    spanishName: "Cuantificadores much, many, a lot",
+    short: "Much / Many",
+    description: "How much for uncountable, How many for countable.",
+    icon: "Scale",
+    accent: "#C2701A",
+  },
+  {
+    id: "wouldLike",
+    name: "Would Like",
+    spanishName: "Would like: peticiones y ofrecimientos",
+    short: "Would Like",
+    description: "The polite way to say want: I'd like, Would you like…?",
+    icon: "Handshake",
+    accent: "#5B54B8",
+  },
 ];
 
 export const TOPIC_MAP: Record<TopicId, TopicMeta> = TOPICS.reduce(

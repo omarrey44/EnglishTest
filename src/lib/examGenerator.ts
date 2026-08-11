@@ -7,27 +7,30 @@ import { shuffle } from "./adaptiveLearning";
 const DIAGNOSTIC_WEIGHTS: Record<TopicId, number> = {
   ordinals: 1,
   weather: 1,
-  dates: 2,
+  dates: 1,
   years: 1,
   andBut: 1,
-  pastVerbs: 2,
+  pastVerbs: 1,
   irregularVerbs: 2,
-  pastNegative: 2,
+  pastNegative: 1,
   edSpelling: 1,
-  edPronunciation: 2,
+  edPronunciation: 1,
   wasWere: 2,
   whQuestions: 1,
   sequenceWords: 1,
   clothes: 1,
+  countable: 1,
+  quantifiers: 2,
+  wouldLike: 1,
 };
 
 /** Exam simulator distribution (30 questions, every topic covered). */
 const EXAM_WEIGHTS: Record<TopicId, number> = {
   ordinals: 2,
-  weather: 2,
-  dates: 3,
+  weather: 1,
+  dates: 2,
   years: 2,
-  andBut: 2,
+  andBut: 1,
   pastVerbs: 2,
   irregularVerbs: 3,
   pastNegative: 2,
@@ -35,8 +38,11 @@ const EXAM_WEIGHTS: Record<TopicId, number> = {
   edPronunciation: 2,
   wasWere: 2,
   whQuestions: 2,
-  sequenceWords: 2,
-  clothes: 2,
+  sequenceWords: 1,
+  clothes: 1,
+  countable: 2,
+  quantifiers: 2,
+  wouldLike: 1,
 };
 
 function draw(topic: TopicId, count: number, used: Set<string>): Question[] {

@@ -13,6 +13,9 @@ import { irregularVerbQuestions } from "./irregularVerbs";
 import { pastNegativeQuestions } from "./pastNegative";
 import { sequenceWordQuestions } from "./sequenceWords";
 import { clothesQuestions } from "./clothes";
+import { countableQuestions } from "./countable";
+import { quantifierQuestions } from "./quantifiers";
+import { wouldLikeQuestions } from "./wouldLike";
 
 export const QUESTIONS: Question[] = [
   ...ordinalQuestions,
@@ -29,6 +32,9 @@ export const QUESTIONS: Question[] = [
   ...pastNegativeQuestions,
   ...sequenceWordQuestions,
   ...clothesQuestions,
+  ...countableQuestions,
+  ...quantifierQuestions,
+  ...wouldLikeQuestions,
 ];
 
 export const QUESTION_MAP: Map<string, Question> = new Map(

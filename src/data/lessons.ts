@@ -590,6 +590,136 @@ export const LESSONS: Record<TopicId, Lesson> = {
       },
     ],
   },
+
+  countable: {
+    topic: "countable",
+    intro:
+      "Some nouns you can count one by one, and some you cannot. English cares about the difference, because it changes the plural, the article, and which words you may put in front.",
+    sections: [
+      {
+        title: "Countable: singular or plural",
+        body: "You can put a number in front of them.",
+        examples: [
+          { left: "an egg", right: "two eggs" },
+          { left: "a bed", right: "three beds" },
+          { left: "a vegetable", right: "some vegetables" },
+        ],
+      },
+      {
+        title: "Uncountable: singular only",
+        body: "No plural -s, and never a number in front. They take a singular verb.",
+        examples: [
+          { left: "bread", right: "not: two breads" },
+          { left: "milk", right: "not: milks" },
+          { left: "furniture", right: "The furniture is new.", note: "singular verb" },
+          { left: "rice · water · money · information · homework", right: "all uncountable" },
+        ],
+      },
+      {
+        title: "some in positives, any in negatives",
+        body: "This works for uncountable nouns and for plural countable nouns alike.",
+        examples: [
+          { left: "Jean buys some pasta.", right: "She doesn't have any bread." },
+          { left: "She bought some vegetables.", right: "She didn't buy any eggs." },
+        ],
+      },
+      {
+        title: "Counting the uncountable",
+        body: "When you really need a number, count the container or the piece, not the noun.",
+        bullets: [
+          "a slice of bread · two slices of bread",
+          "a glass of milk · a cup of coffee",
+          "a piece of furniture · a piece of information",
+          "a bottle of water · a kilo of rice",
+        ],
+      },
+    ],
+  },
+
+  quantifiers: {
+    topic: "quantifiers",
+    intro:
+      "How much and How many both ask about quantity. Which one you pick depends only on whether the noun can be counted.",
+    sections: [
+      {
+        title: "The choice",
+        examples: [
+          { left: "How much furniture does the tent have?", right: "uncountable → How much" },
+          { left: "How many beds do we need?", right: "countable → How many" },
+        ],
+      },
+      {
+        title: "Answering, from nothing to plenty",
+        body: "The same ladder works for both, only the quantifier changes.",
+        examples: [
+          { left: "It doesn't have any furniture.", right: "We don't need any beds.", note: "none" },
+          { left: "Not much. It doesn't have much furniture.", right: "Not many. We don't need many beds.", note: "a little" },
+          { left: "It has some furniture.", right: "We need some beds.", note: "a medium amount" },
+          { left: "It has a lot of furniture!", right: "We need a lot of beds.", note: "plenty" },
+        ],
+      },
+      {
+        title: "a lot of works for both",
+        body: "That is why it is the safe one when you are unsure. Much and many are the ones that force you to choose.",
+        examples: [
+          { left: "a lot of money", right: "uncountable" },
+          { left: "a lot of friends", right: "countable" },
+        ],
+      },
+      {
+        title: "Where much and many live",
+        body: "In everyday English much and many sound most natural in questions and negatives. Positive sentences usually take a lot of.",
+        examples: [
+          { left: "Do you have much time?", right: "question" },
+          { left: "I don't have much time.", right: "negative" },
+          { left: "I have a lot of time.", right: "positive — not: I have much time" },
+        ],
+      },
+    ],
+  },
+
+  wouldLike: {
+    topic: "wouldLike",
+    intro:
+      "Would like is the polite way to say want. It is the same for every subject, and it is what you use to order, to offer, and to ask what somebody wants.",
+    sections: [
+      {
+        title: "The form",
+        body: "Would + subject + like + noun or to + verb.",
+        examples: [
+          { left: "Would you like to meet for dinner?", right: "Yes, please. / No, thanks." },
+          { left: "What would you like to do today?", right: "I'd like to see the city." },
+          { left: "Would you like some coffee?", right: "noun straight after like" },
+        ],
+      },
+      {
+        title: "'d like is the short form",
+        body: "Same for I, you, he, she, it, we and they — would never changes.",
+        examples: [
+          { left: "I'd like to visit the office.", right: "I would like" },
+          { left: "Michael would like to show him the city.", right: "he would like" },
+          { left: "They'd like a table for two.", right: "they would like" },
+        ],
+      },
+      {
+        title: "Would like is not like",
+        body: "This is the trap. Like talks about what you enjoy in general; would like talks about what you want right now.",
+        examples: [
+          { left: "I like coffee.", right: "I enjoy it, always" },
+          { left: "I'd like a coffee.", right: "bring me one now" },
+        ],
+      },
+      {
+        title: "The mistakes that cost points",
+        bullets: [
+          "I'd like to go — not: I'd like go (keep the to)",
+          "Would you like a coffee? — not: Do you would like",
+          "She would like — not: She would likes (would never takes -s)",
+          "The negative is I wouldn't like, not I don't would like",
+        ],
+      },
+    ],
+  },
 };
 
 /** The three -ed sounds, used by the ED Sound Trainer. */

@@ -1,15 +1,18 @@
 import {
   AudioLines,
+  Boxes,
   CalendarDays,
   Clock,
   CloudSun,
   GitMerge,
+  Handshake,
   Hash,
   HelpCircle,
   ListOrdered,
   MinusCircle,
   PenLine,
   Rewind,
+  Scale,
   Shirt,
   Shuffle,
   ToggleLeft,
@@ -37,6 +40,9 @@ const TOPIC_ICONS: Record<TopicId, LucideIcon> = {
   whQuestions: HelpCircle,
   sequenceWords: ListOrdered,
   clothes: Shirt,
+  countable: Boxes,
+  quantifiers: Scale,
+  wouldLike: Handshake,
 };
 
 export function TopicIcon({ topic, className }: { topic: TopicId; className?: string }) {

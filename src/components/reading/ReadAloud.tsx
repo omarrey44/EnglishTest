@@ -46,17 +46,32 @@ export function ReadAloud() {
   const insecure = useSyncExternalStore(neverChanges, isInsecureOrigin, () => false);
 
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
+  /** Everything finalised so far, kept across restarts. */
+  const heardRef = useRef("");
+  /** True once the reader presses Stop, so onend knows not to listen again. */
+  const doneRef = useRef(false);
+  /** True when we threw the session away — onend must not score a stale read. */
+  const cancelledRef = useRef(false);
+  const retriesRef = useRef(0);
+
   const passages = READINGS.filter((r) => r.length === category);
   const reading = passages[index];
 
   // Never leave the microphone open behind us.
   useEffect(() => {
-    return () => recognitionRef.current?.abort();
+    return () => {
+      doneRef.current = true;
+      cancelledRef.current = true;
+      recognitionRef.current?.abort();
+    };
   }, []);
 
   const reset = () => {
+    doneRef.current = true;
+    cancelledRef.current = true;
     recognitionRef.current?.abort();
     recognitionRef.current = null;
+    heardRef.current = "";
     setPhase("idle");
     setScore(null);
     setTranscript("");
@@ -68,49 +83,90 @@ export function ReadAloud() {
     setIndex(next);
   };
 
-  const start = () => {
+  /**
+   * One utterance at a time, restarted until the reader presses Stop.
+   *
+   * `continuous` looks like the obvious setting for a passage, but Chrome ends
+   * the stream on its own after a short silence or about a minute, so a reader
+   * gets cut off mid-paragraph and sometimes sees a network error instead.
+   * Short requests recover on their own and have no time limit in practice.
+   */
+  const listen = () => {
     const Recognition = getSpeechRecognition();
     if (!Recognition) return;
 
-    setScore(null);
-    setTranscript("");
-    setError(null);
-
     const recognition = new Recognition();
     recognition.lang = "en-US";
-    // A passage has pauses in it, so keep listening until the reader stops.
-    recognition.continuous = true;
+    recognition.continuous = false;
     recognition.interimResults = true;
     recognition.maxAlternatives = 1;
 
-    let heard = "";
-
     recognition.onresult = (event) => {
-      let live = "";
+      let interim = "";
       for (let i = 0; i < event.results.length; i += 1) {
-        live += `${event.results[i][0].transcript} `;
+        const result = event.results[i];
+        if (result.isFinal) heardRef.current += `${result[0].transcript} `;
+        else interim += `${result[0].transcript} `;
       }
-      heard = live;
-      setTranscript(live.trim());
+      setTranscript(`${heardRef.current}${interim}`.trim());
     };
 
     recognition.onerror = (event) => {
-      // "aborted" is what our own stop() raises; it is not worth reporting.
-      if (event.error !== "aborted") setError(describeSpeechError(event.error));
+      // Our own stop() raises "aborted"; a pause raises "no-speech". Neither is
+      // worth showing, and onend restarts after both.
+      if (event.error === "aborted" || event.error === "no-speech") return;
+
+      // A flaky speech backend is common. Let onend retry a few times before
+      // giving up and telling the reader.
+      if (event.error === "network" && retriesRef.current < 3) {
+        retriesRef.current += 1;
+        return;
+      }
+
+      setError(describeSpeechError(event.error));
+      doneRef.current = true;
     };
 
     recognition.onend = () => {
       recognitionRef.current = null;
-      setScore(scoreReading(reading.text, heard));
+      if (cancelledRef.current) return;
+      if (!doneRef.current) {
+        listen();
+        return;
+      }
+      setScore(scoreReading(reading.text, heardRef.current));
       setPhase("scored");
     };
 
     recognitionRef.current = recognition;
-    setPhase("listening");
     recognition.start();
   };
 
-  const stop = () => recognitionRef.current?.stop();
+  const start = () => {
+    if (!getSpeechRecognition()) return;
+
+    heardRef.current = "";
+    doneRef.current = false;
+    cancelledRef.current = false;
+    retriesRef.current = 0;
+    setScore(null);
+    setTranscript("");
+    setError(null);
+    setPhase("listening");
+    listen();
+  };
+
+  const stop = () => {
+    doneRef.current = true;
+    const recognition = recognitionRef.current;
+    if (recognition) {
+      recognition.stop();
+    } else {
+      // Between restarts there is nothing running, so score what we have.
+      setScore(scoreReading(reading.text, heardRef.current));
+      setPhase("scored");
+    }
+  };
 
   const tone =
     score === null
@@ -271,7 +327,7 @@ export function ReadAloud() {
       {phase === "listening" ? (
         <p className="index mt-4 flex items-center gap-2 text-danger">
           <span className="size-2 animate-pulse rounded-full bg-danger" />
-          Listening — read the passage out loud
+          Listening — take your time, then press stop
         </p>
       ) : null}
 

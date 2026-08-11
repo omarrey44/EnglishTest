@@ -41,6 +41,17 @@ export function getSpeechRecognition(): SpeechRecognitionCtor | null {
   return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null;
 }
 
+/**
+ * The API exists on an insecure origin but fails once you press record, with
+ * an error that says nothing useful. Opening the dev server on a LAN address
+ * such as http://192.168.x.x is the usual way to land here — localhost counts
+ * as secure, a bare IP does not.
+ */
+export function isInsecureOrigin(): boolean {
+  if (typeof window === "undefined") return false;
+  return !window.isSecureContext;
+}
+
 /** Human-readable reason, so the UI never shows a bare error code. */
 export function describeSpeechError(code: string): string {
   switch (code) {
@@ -52,7 +63,9 @@ export function describeSpeechError(code: string): string {
     case "audio-capture":
       return "No microphone found. Check that one is connected.";
     case "network":
-      return "Speech recognition needs a connection and it could not reach the service.";
+      // Chrome sends the audio to Google to transcribe it, so "network" means
+      // that service was unreachable — not that the page failed to load.
+      return "Could not reach the speech service. Check your connection, and note that Brave and some Chromium builds ship without it — plain Chrome, Edge or Safari work.";
     case "aborted":
       return "Recording stopped.";
     default:

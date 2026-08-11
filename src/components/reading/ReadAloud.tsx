@@ -11,6 +11,7 @@ import { scoreReading, type ReadingScore } from "@/lib/readingScore";
 import {
   describeSpeechError,
   getSpeechRecognition,
+  isInsecureOrigin,
   type SpeechRecognitionLike,
 } from "@/lib/speechRecognition";
 import { cn } from "@/lib/cn";
@@ -40,6 +41,9 @@ export function ReadAloud() {
     () => getSpeechRecognition() !== null,
     () => true,
   );
+
+  // Caught separately: the API is present here, it just fails on record.
+  const insecure = useSyncExternalStore(neverChanges, isInsecureOrigin, () => false);
 
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const passages = READINGS.filter((r) => r.length === category);
@@ -184,6 +188,13 @@ export function ReadAloud() {
           This browser cannot listen. Reading practice needs Chrome, Edge or Safari — Firefox
           does not support speech recognition.
         </p>
+      ) : insecure ? (
+        <p className="mt-6 flex gap-3 rounded-xl border border-warning/30 bg-warning/8 p-4 text-sm leading-relaxed text-ink-soft">
+          <TriangleAlert className="mt-0.5 size-4 shrink-0 text-warning" />
+          The microphone only works over a secure connection. Open this page on{" "}
+          <strong>localhost</strong> or over <strong>https</strong> — a plain address like
+          http://192.168.1.5:3000 will fail the moment you press record.
+        </p>
       ) : null}
 
       {error ? (
@@ -243,7 +254,7 @@ export function ReadAloud() {
             Stop and check
           </Button>
         ) : (
-          <Button size="lg" className="flex-1" onClick={start} disabled={!supported}>
+          <Button size="lg" className="flex-1" onClick={start} disabled={!supported || insecure}>
             <Mic className="size-4" />
             {score ? "Read it again" : "Start reading"}
           </Button>

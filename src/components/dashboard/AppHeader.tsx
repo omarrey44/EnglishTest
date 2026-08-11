@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRef } from "react";
 import { usePathname } from "next/navigation";
 import { BookOpen, Flame, LayoutDashboard, LibraryBig, Menu, Mic, Trophy } from "lucide-react";
 import { useProgress } from "@/components/progress/ProgressProvider";
@@ -17,6 +18,11 @@ const NAV = [
 export function AppHeader({ compact = false }: { compact?: boolean }) {
   const { state } = useProgress();
   const pathname = usePathname();
+  const menuRef = useRef<HTMLDetailsElement>(null);
+
+  const closeMenu = () => {
+    if (menuRef.current) menuRef.current.open = false;
+  };
 
   return (
     <header className="sticky top-0 z-40 border-b border-line/80 bg-white/88 backdrop-blur-xl">
@@ -65,7 +71,7 @@ export function AppHeader({ compact = false }: { compact?: boolean }) {
           <GuestBadge />
           <AccountMenu />
           {!compact ? (
-            <details className="relative lg:hidden">
+            <details ref={menuRef} className="relative lg:hidden">
               <summary className="grid min-h-11 min-w-11 cursor-pointer list-none place-items-center rounded-full border border-line bg-white">
                 <Menu className="size-5" />
                 <span className="sr-only">Open menu</span>
@@ -75,6 +81,9 @@ export function AppHeader({ compact = false }: { compact?: boolean }) {
                   <Link
                     key={href}
                     href={href}
+                    // Tapping the page you are already on navigates nowhere, so
+                    // nothing would re-render and the menu would stay open.
+                    onClick={closeMenu}
                     aria-current={pathname === href.split("?")[0] ? "page" : undefined}
                     className={`flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm hover:bg-surface-2 ${
                       pathname === href.split("?")[0] ? "bg-blue-50 font-semibold text-accent" : ""

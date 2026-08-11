@@ -1,7 +1,16 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { ArrowLeft, ArrowRight, Mic, RotateCcw, Square, TriangleAlert } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Mic,
+  RotateCcw,
+  Square,
+  TriangleAlert,
+  Volume2,
+  VolumeX,
+} from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Card";
@@ -14,6 +23,7 @@ import {
   isInsecureOrigin,
   type SpeechRecognitionLike,
 } from "@/lib/speechRecognition";
+import { canSpeak, speak, stopSpeaking } from "@/lib/speak";
 import { cn } from "@/lib/cn";
 
 type Phase = "idle" | "listening" | "scored";
@@ -45,6 +55,9 @@ export function ReadAloud() {
   // Caught separately: the API is present here, it just fails on record.
   const insecure = useSyncExternalStore(neverChanges, isInsecureOrigin, () => false);
 
+  const [speaking, setSpeaking] = useState(false);
+  const canHear = useSyncExternalStore(neverChanges, canSpeak, () => true);
+
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   /** Everything finalised so far, kept across restarts. */
   const heardRef = useRef("");
@@ -63,13 +76,27 @@ export function ReadAloud() {
       doneRef.current = true;
       cancelledRef.current = true;
       recognitionRef.current?.abort();
+      stopSpeaking();
     };
   }, []);
+
+  /** Never let the voice and the microphone run at the same time. */
+  const toggleSpeak = () => {
+    if (speaking) {
+      stopSpeaking();
+      setSpeaking(false);
+      return;
+    }
+    setSpeaking(true);
+    speak(reading.text, () => setSpeaking(false));
+  };
 
   const reset = () => {
     doneRef.current = true;
     cancelledRef.current = true;
     recognitionRef.current?.abort();
+    stopSpeaking();
+    setSpeaking(false);
     recognitionRef.current = null;
     heardRef.current = "";
     setPhase("idle");
@@ -145,6 +172,10 @@ export function ReadAloud() {
   const start = () => {
     if (!getSpeechRecognition()) return;
 
+    // The voice would end up in the transcript.
+    stopSpeaking();
+    setSpeaking(false);
+
     heardRef.current = "";
     doneRef.current = false;
     cancelledRef.current = false;
@@ -217,9 +248,28 @@ export function ReadAloud() {
         </span>
       </div>
 
-      <h2 className="mt-4 font-display text-[2rem] leading-none tracking-[-0.03em]">
-        {reading.title}
-      </h2>
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
+        <h2 className="font-display text-[2rem] leading-none tracking-[-0.03em]">
+          {reading.title}
+        </h2>
+
+        {canHear ? (
+          <button
+            type="button"
+            onClick={toggleSpeak}
+            aria-label={speaking ? "Stop the recording" : "Hear the passage read aloud"}
+            className={cn(
+              "inline-flex min-h-11 items-center gap-2 rounded-full border px-4 text-sm font-semibold transition-colors",
+              speaking
+                ? "border-accent bg-accent text-white"
+                : "border-line bg-surface text-ink hover:border-accent/40 hover:text-accent",
+            )}
+          >
+            {speaking ? <VolumeX className="size-4" /> : <Volume2 className="size-4" />}
+            {speaking ? "Stop" : "Listen"}
+          </button>
+        ) : null}
+      </div>
 
       {/* ---- The passage ---------------------------------------------- */}
       <p className="mt-6 text-[1.35rem] leading-[1.9] tracking-[-0.01em] sm:text-[1.5rem]">

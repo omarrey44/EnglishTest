@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, Flame, LayoutDashboard, LibraryBig, Menu, Trophy } from "lucide-react";
+import { BookOpen, Flame, LayoutDashboard, LibraryBig, Menu, Mic, Trophy } from "lucide-react";
 import { useProgress } from "@/components/progress/ProgressProvider";
 import { AccountMenu, GuestBadge } from "@/components/auth/AccountMenu";
 
@@ -10,6 +10,7 @@ const NAV = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/practice?mode=smart", label: "Practice", icon: BookOpen },
   { href: "/exam", label: "Simulator", icon: Trophy },
+  { href: "/reading", label: "Reading", icon: Mic },
   { href: "/learn", label: "Topics", icon: LibraryBig },
 ] as const;
 

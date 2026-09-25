@@ -3,7 +3,10 @@ import { questionsByTopic } from "@/data/questions";
 import { TOPIC_IDS } from "@/data/topics";
 import { shuffle } from "./adaptiveLearning";
 
-/** How many diagnostic questions each topic gets (20 total, every topic covered). */
+/**
+ * Relative weight of each topic in the diagnostic. The diagnostic covers at most
+ * MAX_DIAGNOSTIC_TOPICS topics, so these are shares of DIAGNOSTIC_LENGTH, not counts.
+ */
 const DIAGNOSTIC_WEIGHTS: Record<TopicId, number> = {
   ordinals: 1,
   weather: 1,
@@ -22,27 +25,43 @@ const DIAGNOSTIC_WEIGHTS: Record<TopicId, number> = {
   countable: 1,
   quantifiers: 2,
   wouldLike: 1,
+  partsOfSpeech: 1,
+  intensifiers: 1,
+  thereIsAre: 1,
+  presentContinuous: 2,
+  toInfinitive: 1,
+  presentVsContinuous: 2,
+  haveTo: 1,
+  should: 1,
 };
 
 /** Exam simulator distribution (30 questions, every topic covered). */
 const EXAM_WEIGHTS: Record<TopicId, number> = {
-  ordinals: 2,
+  ordinals: 1,
   weather: 1,
-  dates: 2,
-  years: 2,
+  dates: 1,
+  years: 1,
   andBut: 1,
-  pastVerbs: 2,
-  irregularVerbs: 3,
-  pastNegative: 2,
-  edSpelling: 2,
-  edPronunciation: 2,
-  wasWere: 2,
-  whQuestions: 2,
+  pastVerbs: 1,
+  irregularVerbs: 2,
+  pastNegative: 1,
+  edSpelling: 1,
+  edPronunciation: 1,
+  wasWere: 1,
+  whQuestions: 1,
   sequenceWords: 1,
   clothes: 1,
-  countable: 2,
+  countable: 1,
   quantifiers: 2,
   wouldLike: 1,
+  partsOfSpeech: 1,
+  intensifiers: 1,
+  thereIsAre: 1,
+  presentContinuous: 2,
+  toInfinitive: 1,
+  presentVsContinuous: 2,
+  haveTo: 2,
+  should: 1,
 };
 
 function draw(topic: TopicId, count: number, used: Set<string>): Question[] {
@@ -54,9 +73,11 @@ function draw(topic: TopicId, count: number, used: Set<string>): Question[] {
     ...pool.filter((q) => q.difficulty === 3),
   ];
   const picked: Question[] = [];
-  const step = Math.max(1, Math.floor(byDifficulty.length / Math.max(count, 1)));
+  // Fractional step spreads picks across the whole pool, so hard questions are
+  // reached even when count is close to the pool size.
+  const step = Math.max(1, byDifficulty.length / Math.max(count, 1));
   for (let i = 0; picked.length < count && i < byDifficulty.length; i += step) {
-    const q = byDifficulty[i];
+    const q = byDifficulty[Math.floor(i)];
     if (!used.has(q.id)) {
       picked.push(q);
       used.add(q.id);
@@ -74,7 +95,7 @@ function draw(topic: TopicId, count: number, used: Set<string>): Question[] {
 
 /** The full length of each session when every topic is selected. */
 export const EXAM_LENGTH = Object.values(EXAM_WEIGHTS).reduce((a, b) => a + b, 0);
-export const DIAGNOSTIC_LENGTH = Object.values(DIAGNOSTIC_WEIGHTS).reduce((a, b) => a + b, 0);
+export const DIAGNOSTIC_LENGTH = 20;
 
 /** The diagnostic is meant to stay short, so it only covers so many topics. */
 export const MAX_DIAGNOSTIC_TOPICS = 10;

@@ -675,6 +675,15 @@ export const LESSONS: Record<TopicId, Lesson> = {
           { left: "I have a lot of time.", right: "positive — not: I have much time" },
         ],
       },
+      {
+        title: "a few and a little: a small amount",
+        body: "Both are for positive sentences. Again, the noun decides.",
+        examples: [
+          { left: "I went to the restaurant with a few friends.", right: "a few + countable" },
+          { left: "I only have a little time.", right: "a little + uncountable" },
+          { left: "There were lots of / a lot of fish around us.", right: "big amount, both kinds" },
+        ],
+      },
     ],
   },
 
@@ -716,6 +725,299 @@ export const LESSONS: Record<TopicId, Lesson> = {
           "Would you like a coffee? — not: Do you would like",
           "She would like — not: She would likes (would never takes -s)",
           "The negative is I wouldn't like, not I don't would like",
+        ],
+      },
+    ],
+  },
+
+  partsOfSpeech: {
+    topic: "partsOfSpeech",
+    intro:
+      "If you know whether a word is a verb, a noun or an adjective, the sentence is easier to understand — and you can often guess a word you have never seen.",
+    sections: [
+      {
+        title: "The three you need",
+        examples: [
+          { left: "verb", right: "an action: has, eat, grow, kill" },
+          { left: "noun", right: "a person, place or thing: bagel, farmer, menu" },
+          { left: "adjective", right: "describes a noun: new, fiery, hot" },
+        ],
+      },
+      {
+        title: "Subject → verb → object",
+        body: "Most English sentences follow this order. The subject and the object are nouns.",
+        examples: [
+          { left: "Einstein Brothers Bagels", right: "subject (noun)" },
+          { left: "has", right: "verb" },
+          { left: "a new bagel", right: "object (adjective + noun)" },
+        ],
+      },
+      {
+        title: "Position gives it away",
+        bullets: [
+          "After a / an / the → a noun, or an adjective and then a noun: a new bagel",
+          "Before a noun → an adjective: a fiery pepper",
+          "After can, don't, did or to → a verb: it can kill you",
+          "After very, really, extremely → an adjective: extremely fiery",
+        ],
+      },
+      {
+        title: "Guess the meaning from context",
+        body: "First decide the part of speech, then use the rest of the sentence.",
+        examples: [
+          { left: "The soup was so scalding I burned my tongue.", right: "adjective → very hot" },
+          { left: "Don't gobble your food. Eat slowly!", right: "verb → eat very fast" },
+          { left: "I took a bite. / Dogs can bite.", right: "same word: noun, then verb" },
+        ],
+      },
+    ],
+  },
+
+  intensifiers: {
+    topic: "intensifiers",
+    intro:
+      "Quite, very and really go before adjectives to make your writing more interesting. They change how strong the adjective is.",
+    sections: [
+      {
+        title: "very and really: stronger",
+        examples: [
+          { left: "That restaurant is very expensive.", right: "= really expensive" },
+          { left: "We'll spend hundreds of dollars!", right: "more than normal" },
+        ],
+      },
+      {
+        title: "quite: less strong",
+        examples: [
+          { left: "The atmosphere was quite relaxed.", right: "relaxed, but not extremely" },
+          { left: "The movie was quite good.", right: "good, not great" },
+        ],
+      },
+      {
+        title: "The position",
+        body: "The adverb goes right before the adjective. With a noun, a / an comes first.",
+        examples: [
+          { left: "The food was very good.", right: "not: good very" },
+          { left: "We had a really good meal.", right: "not: really a good meal" },
+        ],
+      },
+      {
+        title: "Small traps",
+        bullets: [
+          "One adverb is enough: very slow — not quite very slow",
+          "Really can also go before a verb: I really like it. Very cannot — never I very like it",
+        ],
+      },
+    ],
+  },
+
+  thereIsAre: {
+    topic: "thereIsAre",
+    intro:
+      "There is and There are say that something exists in a place — the English for hay. Use There is with singular nouns and There are with plural nouns.",
+    sections: [
+      {
+        title: "Positive and negative",
+        examples: [
+          { left: "There's a curved wall in every room.", right: "There isn't a corner in the whole house!" },
+          { left: "There are trees on the roof.", right: "There aren't any corners in the house." },
+        ],
+      },
+      {
+        title: "Questions and short answers",
+        body: "Swap the two words. Positive short answers never use the short form.",
+        examples: [
+          { left: "Is there a curved wall in every room?", right: "Yes, there is. / No, there isn't." },
+          { left: "Are there any corners in the house?", right: "Yes, there are. / No, there aren't." },
+        ],
+      },
+      {
+        title: "Remember",
+        bullets: [
+          "There's = There is. Yes, there is — not Yes, there's",
+          "some in positives, any in negatives and questions",
+          "Uncountable nouns take There is: There is some milk, There is a lot of furniture",
+          "There (hay) · their (de ellos) · they're (they are)",
+        ],
+      },
+    ],
+  },
+
+  presentContinuous: {
+    topic: "presentContinuous",
+    intro:
+      "The present continuous talks about actions happening now, or about the situation around now: am / is / are + verb-ing.",
+    sections: [
+      {
+        title: "The form",
+        examples: [
+          { left: "I'm making a dress.", right: "I am" },
+          { left: "She's learning to bake.", right: "he / she / it is" },
+          { left: "We're starting to make our own things.", right: "we / you / they are" },
+        ],
+      },
+      {
+        title: "Wh- questions",
+        body: "Question word + be + subject + -ing.",
+        examples: [
+          { left: "What are you making right now?", right: "I'm making a dress for my daughter." },
+          { left: "Why is she crying?", right: "She's watching a sad movie." },
+        ],
+      },
+      {
+        title: "Yes / no questions",
+        body: "Short answers use be — and the full form in positives.",
+        examples: [
+          { left: "Is your brother learning how to bake?", right: "Yes, he is. / No, he isn't." },
+          { left: "Are you working today?", right: "Yes, I am. / No, I'm not." },
+        ],
+      },
+      {
+        title: "-ing spelling",
+        bullets: [
+          "Most verbs add -ing: work → working, study → studying",
+          "Ending in -e: drop the e → make → making, write → writing",
+          "Consonant + vowel + consonant: double it → run → running, sit → sitting, swim → swimming",
+        ],
+      },
+    ],
+  },
+
+  toInfinitive: {
+    topic: "toInfinitive",
+    intro:
+      "Sometimes a second verb follows the main verb. After verbs like want, need and plan, the second verb takes to.",
+    sections: [
+      {
+        title: "Subject + verb + to + verb",
+        examples: [
+          { left: "I would like to study computer programming.", right: "would like to" },
+          { left: "He wants to take cooking classes.", right: "wants to" },
+          { left: "We needed to improve our writing skills.", right: "needed to" },
+        ],
+      },
+      {
+        title: "Only the first verb changes",
+        body: "The first verb changes with the subject or the tense. The to verb never changes.",
+        examples: [
+          { left: "She wants to learn.", right: "not: She wants to learns" },
+          { left: "We decided to go.", right: "not: We decided to went" },
+        ],
+      },
+      {
+        title: "Verbs that often take to",
+        bullets: ["want · like · would like · need · plan · decide"],
+      },
+      {
+        title: "Not with can, should, must",
+        body: "These go straight to the verb, with no to.",
+        examples: [
+          { left: "You can come with us.", right: "not: can to come" },
+          { left: "You should study.", right: "not: should to study" },
+        ],
+      },
+    ],
+  },
+
+  presentVsContinuous: {
+    topic: "presentVsContinuous",
+    intro:
+      "Both tenses talk about the present, but not the same present. The simple present is for what is always true or happens regularly; the present continuous is for what is happening now.",
+    sections: [
+      {
+        title: "The difference",
+        examples: [
+          { left: "People often pay a lot of money for paintings.", right: "fact, habit, routine → simple present" },
+          { left: "Today we're talking about expensive paintings.", right: "now or around now → present continuous" },
+          { left: "She works in a bank, but this week she's working from home.", right: "both in one sentence" },
+        ],
+      },
+      {
+        title: "Time expressions: simple present",
+        body: "These usually go before the main verb.",
+        bullets: ["always · usually · often · sometimes · never", "She always walks to school."],
+      },
+      {
+        title: "Time expressions: present continuous",
+        bullets: ["right now · at the moment · Look! · Listen!", "I'm studying for an exam at the moment."],
+      },
+      {
+        title: "Time expressions: both",
+        bullets: ["now · these days · today"],
+      },
+    ],
+  },
+
+  haveTo: {
+    topic: "haveTo",
+    intro:
+      "Have to talks about rules, or about things that are necessary. Don't have to means there is a choice — it is not necessary, but you can if you want.",
+    sections: [
+      {
+        title: "Positive",
+        examples: [
+          { left: "I have to go to the ATM.", right: "I / you / we / they have to" },
+          { left: "He has to work tonight.", right: "he / she / it has to" },
+        ],
+      },
+      {
+        title: "Negative: not necessary",
+        examples: [
+          { left: "I don't have to work until later.", right: "I / you / we / they" },
+          { left: "She doesn't have to study tonight.", right: "he / she / it" },
+        ],
+      },
+      {
+        title: "Questions use do / does",
+        examples: [
+          { left: "Do you have to study tonight?", right: "Yes, I do." },
+          { left: "Does she have to work tonight?", right: "No, she doesn't." },
+        ],
+      },
+      {
+        title: "The mistakes that cost points",
+        bullets: [
+          "After doesn't or does, it is have again: She doesn't have to — not doesn't has to",
+          "Have to + base verb: have to go — not have to going",
+          "Questions need do: Do you have to…? — not Have you to…?",
+          "Don't have to ≠ prohibited. It only means not necessary",
+        ],
+      },
+    ],
+  },
+
+  should: {
+    topic: "should",
+    intro:
+      "Should and shouldn't ask for advice and give it. Should is the same for every subject and goes straight to the verb, with no to.",
+    sections: [
+      {
+        title: "Giving advice",
+        examples: [
+          { left: "You should visit Monaco if you love languages.", right: "good idea" },
+          { left: "You shouldn't visit in the winter. It rains a lot.", right: "bad idea" },
+        ],
+      },
+      {
+        title: "Asking for advice",
+        examples: [
+          { left: "Should I bring a jacket?", right: "Yes, you should. It's always cool in the evening." },
+          { left: "What should I do?", right: "You should call the embassy." },
+        ],
+      },
+      {
+        title: "Should or have to?",
+        body: "Should is a recommendation. Have to is a rule.",
+        examples: [
+          { left: "You should try the local food.", right: "advice" },
+          { left: "You have to show your passport.", right: "rule" },
+        ],
+      },
+      {
+        title: "The mistakes that cost points",
+        bullets: [
+          "should + base verb: You should study — not should to study, not should studies",
+          "Negative: shouldn't — not don't should",
+          "Question: Should I…? — not Do I should…?",
         ],
       },
     ],

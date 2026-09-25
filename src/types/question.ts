@@ -15,7 +15,15 @@ export type TopicId =
   | "clothes"
   | "countable"
   | "quantifiers"
-  | "wouldLike";
+  | "wouldLike"
+  | "partsOfSpeech"
+  | "intensifiers"
+  | "thereIsAre"
+  | "presentContinuous"
+  | "toInfinitive"
+  | "presentVsContinuous"
+  | "haveTo"
+  | "should";
 
 export type QuestionType =
   | "multiple-choice"

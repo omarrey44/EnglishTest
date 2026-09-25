@@ -16,6 +16,14 @@ import { clothesQuestions } from "./clothes";
 import { countableQuestions } from "./countable";
 import { quantifierQuestions } from "./quantifiers";
 import { wouldLikeQuestions } from "./wouldLike";
+import { partsOfSpeechQuestions } from "./partsOfSpeech";
+import { intensifierQuestions } from "./intensifiers";
+import { thereIsAreQuestions } from "./thereIsAre";
+import { presentContinuousQuestions } from "./presentContinuous";
+import { toInfinitiveQuestions } from "./toInfinitive";
+import { presentVsContinuousQuestions } from "./presentVsContinuous";
+import { haveToQuestions } from "./haveTo";
+import { shouldQuestions } from "./should";
 
 export const QUESTIONS: Question[] = [
   ...ordinalQuestions,
@@ -35,6 +43,14 @@ export const QUESTIONS: Question[] = [
   ...countableQuestions,
   ...quantifierQuestions,
   ...wouldLikeQuestions,
+  ...partsOfSpeechQuestions,
+  ...intensifierQuestions,
+  ...thereIsAreQuestions,
+  ...presentContinuousQuestions,
+  ...toInfinitiveQuestions,
+  ...presentVsContinuousQuestions,
+  ...haveToQuestions,
+  ...shouldQuestions,
 ];
 
 export const QUESTION_MAP: Map<string, Question> = new Map(
